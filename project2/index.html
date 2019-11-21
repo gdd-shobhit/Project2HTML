@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+    <script src="js/main.js"></script>
+    <title>Project 2</title>
+</head>
+
+<body>
+    <nav>
+        <h1>Welcome to Pokemon Search with Kanye!</h1>
+        <ul id="links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="documentation.html">Documentation</a></li>
+        </ul>
+    </nav>
+
+    <div id="contentwrapper">
+        <div id="kanyequote">
+            <p>What does Kanye have to say to this pokemon?</p>
+            <img src="media/kanye.png" alt="Kanye">
+            <p id="quote"></p>
+        </div>
+
+        <div>
+            <div id="controls">
+                <div id="searchControls" class="buttons">
+                    <input type="text" autofocus value="pikachu">
+                    <button type="button" id="search">Search!</button>
+                </div>
+                <div id="randControls" class="buttons">
+                    <button type="button" id="random">Find a random Pokemon!</button>
+                    <button type="button" id="previous">Find the previously searched Pokemon!</button>
+                </div>
+                <div id="nextControls" class="buttons">
+                    <button type="button" id="back">Back</button>
+                    <button type="button" id="next">Next</button>
+                </div>
+            </div>
+
+            <div id="pokemon">
+                <div id="image">
+                    <img id="pkmimg" src="" alt="">
+                </div>
+                <div id="information">
+                    <dl id="infolist">
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
