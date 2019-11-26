@@ -215,9 +215,11 @@ nav h1{
     margin-left: auto;
 }
 #links{
+    width: 100%;
+    padding: 0;
     margin-left: auto;
     margin-right: auto;
-    justify-content: space-between;
+    flex-direction: column;
 }
 #links li{
     width: 50%;
@@ -225,10 +227,22 @@ nav h1{
 }
 
 #contentwrapper{
+    width: 100%;
     flex-direction: column;
 }
 
 #pokemon{
     flex-direction: column;
+}
+#image{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 25px;
+}
+#information{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 25px;
+    width: 80%;
 }
 }
