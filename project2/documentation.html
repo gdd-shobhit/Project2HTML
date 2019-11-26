@@ -19,6 +19,49 @@
             </nav>
     <div id="documentation">
             <h1>Documentation of Project 2</h1>
+            <h2>Process</h2>
+            <p> We used Kanye Quote API.
+                It is a free REST API for random Kanye West quotes (Kanye as a Service)
+                Using the API GET method, we get a random quote through it and display it on the page.
+                The quote is generated when a Pokemon is searched or changed on the screen. Whenever the buttons on the screen
+                are pressed, it calls the API to get the random quote and then the random quote is refracted through css to display on the website correctly.       
+            </p>
+            <p>
+                In addition to that, the quote and the picture of Kanye is to the left and the pokemon info is to the right.
+                The design is basically for letting the user know that what Kanye says about the pokemon.
+            </p>
+         
+            <p>For getting information related to pokemon, we used the PokeApi's documentation to learn about how pinging the API actually works, and what the 
+                pokemon object contains. Using the framework from the GIPHY Finder HW, we created a method to get information about a specific pokemon and display
+                it in a pleasing manner for the user, with any sort of relevant information about the pokemon and an image of the pokemon being displayed. To effectively
+                display the information, a description list was used to sort out all the info. In order to get the next and previous pokemon in the pokedex, the index of
+                the searched pokemon is stored, and to get the previously searched pokemon, the name of the previous pokemon is stored before the new pokemon is displayed.
+            </p>
+            <p>
+                In terms of controls, there is a regular search box, that allows users to search for pokemon by name or by index in the pokedex, which just tags on the name or
+                index of the pokemon onto the search URL. For getting the next and previous pokemon, it just searches the index of the current pokemon, either plus or minus one. For searching
+                for a random pokemon, it finds a random pokemon generated using the random function and tags that onto the URL. The previously searched button just searches for the previous
+                pokemon by name tagged onto the URL. 
+            </p>
+            <p>
+                One of the cooler features we have is a autocomplete function, that attaches a list of relevant search terms to the bottom of the input box whenever the user
+                begins typing a new search term. It gives suggestions for any pokemon that match the name of the pokemon currently being searched. It was created using the tutorial from
+                W3C schools. 
+            </p>
+            <p>
+                The color scheme for the site was created with the general colors of pokemon in mind, using the general color scheme of the poke-ball. The layout of the website was created 
+                to ensure that Kanye was always in view when searching for pokemon, unless on mobile where displaying the information in a nice format is of the utmost importance. We also 
+                added css animations to the buttons when they are hovered, for a nicer UX.  
+            </p>
+            <h2>Resources</h2>
+            <ul>
+                <li>CSS/Javascript tutorials: <a href="https://www.w3.org/">W3C</a></li>
+                <li>Javascript tutorials: <a href="https://developer.mozilla.org/en-US/">Mozilla Developer</a></li>
+                <li>Autocomplete tutorial: <a href="https://www.w3schools.com/howto/howto_js_autocomplete.asp">W3C Schools HowTo</a></li>
+                <li>Pokemon API: <a href="https://pokeapi.co/">PokeAPI</a></li>
+                <li>Kanye Quotes: <a href="https://kanye.rest/">Kanye Rest</a></li>
+                <li>Kanye Image: <a href="https://i0.wp.com/www.nationalreview.com/wp-content/uploads/2018/08/kanye-west-paris-fashion-week-2015.jpg?resize=789%2C460&ssl=1">National Review</a></li>
+            </ul>
     </div>
 
 </body>

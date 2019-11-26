@@ -1,5 +1,4 @@
 const pkmKey = "acm1551-pkm";
-const prevPkmKey = "acm1551-prevPkm";
 
 let currentPokemon = 0;
 let previousPokemon = "";
@@ -10,12 +9,8 @@ getData("https://pokeapi.co/api/v2/pokemon/?limit=808", loadList);
 
 if (localStorage.getItem(pkmKey))  
     currentPokemon = localStorage.getItem(pkmKey);
-if (localStorage.getItem(prevPkmKey))  
-    previousPokemon = localStorage.getItem(prevPkmKey);
 
 window.onload = (e) => {
-    console.log(localStorage.getItem(prevPkmKey));
-    console.log(previousPokemon);
     //Add functionality to buttons
     if (currentPokemon == 0)
         getPokemon((Math.floor(Math.random() * Math.floor(806)) + 1))
@@ -27,7 +22,15 @@ window.onload = (e) => {
     document.querySelector("#previous").onclick = () => { getPokemon(previousPokemon); };
     document.querySelector("#back").onclick = () => { getPokemon((currentPokemon - 1)); };
     document.querySelector("#next").onclick = () => { getPokemon((currentPokemon + 1)); };
-    document.querySelector("#search").onclick = () => { getPokemon(document.querySelector("input").value.toLowerCase()); };
+    document.querySelector("#search").onclick = () => { 
+        input = document.querySelector("input").value.toLowerCase();
+        if (!input){
+            document.querySelector("#information").innerHTML = "<p>Please enter a search term!</p>"
+            document.querySelector("#pkmimg").src = "";
+        }
+        else
+            getPokemon(input); 
+    };
 };
 
 //Load in a kanye quote
@@ -52,11 +55,12 @@ function pokemonLoaded(e) {
     if (e.target.responseText != "Not Found") {
         previousPokemon = lastTerm;
         let obj = JSON.parse(e.target.responseText);
+
+        let pkmDisplay = document.querySelector("#information");
         document.querySelector("#pkmimg").src = obj.sprites.front_default;
 
         //Get the pokemon info list
-        let pkminfo = document.querySelector("#infolist");
-        pkminfo.innerHTML = "";
+        let pkminfo = document.createElement("dl");
 
         //Name
         createDescription("Name", obj.name, pkminfo);
@@ -108,10 +112,11 @@ function pokemonLoaded(e) {
 
         //Store the search terms
         localStorage.setItem(pkmKey, currentPokemon);
-        localStorage.setItem(prevPkmKey, previousPokemon);
+        pkmDisplay.innerHTML = "";
+        pkmDisplay.appendChild(pkminfo);
     }
     else{
-        document.querySelector("#infolist").innerHTML = "<p>No pokemon found!</p>"
+        document.querySelector("#information").innerHTML = "<p>Pokemon not found!</p>"
         document.querySelector("#pkmimg").src = "";
     }
 }
@@ -132,6 +137,7 @@ function getData(url, dataLoaded) {
 
 //Get a random pokemon
 function getPokemon(pokemon) {
+    document.querySelector("#information").innerHTML = "<p>Searching for pokemon</p>";
     getData("https://pokeapi.co/api/v2/pokemon/" + pokemon, pokemonLoaded);
 }
 

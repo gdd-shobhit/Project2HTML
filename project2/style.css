@@ -21,12 +21,13 @@ nav{
 }
 
 nav h1{
-    margin-right: 100px;
+    margin-right: 8%;
 }
 
 #links{
     list-style-type: none;
     width: 40%;
+    margin-right: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -49,7 +50,7 @@ nav h1{
 
 
 /*kanye quotes*/
-#kanyequote, #controls, #pokemon, .buttons{
+#contentwrapper, #controls, #pokemon, .buttons{
     margin-left: auto;
     margin-right: auto;
 }
@@ -57,15 +58,16 @@ nav h1{
 #contentwrapper{
     width: 90%;
     display: flex;
+    justify-content: space-evenly;
 }
 
 #kanyequote{
     background: #cfcfcf;
     width: 40%;
+    height: 65%;
     border-radius: 15px;
     padding: 15px;
-    margin-top: 25px;
-    margin-bottom: 25px;
+    margin: 25px;
 }
 #kanyequote p{
     text-align: center;
@@ -130,7 +132,7 @@ nav h1{
 }
 #controls button:hover{
     background: #ed5a5a; 
-    box-shadow: 0px 6px black;
+    box-shadow: 0px 4px black;
     animation-name: buttonHover;
     animation-duration: .5s;
 }
@@ -149,10 +151,10 @@ nav h1{
 
 @keyframes buttonHover{
     from{background: #b84646; box-shadow: none;}
-    to{background: #ed5a5a; box-shadow: 0px 6px black;}
+    to{background: #ed5a5a; box-shadow: 0px 4px black;}
 }
 @keyframes button{
-    from{background: #ed5a5a; box-shadow: 0px 6px black;}
+    from{background: #ed5a5a; box-shadow: 0px 4px black;}
     to{background: #b84646; box-shadow: none;}
 }
 /*button controls*/
@@ -186,9 +188,21 @@ nav h1{
 
 
 /*Documentation*/
-#documentation h1{
-    margin-left: 10px;
+#documentation h1, #documentation h2, #documentation ul{
+    margin-left: auto;
+    margin-right: auto;
     text-align: center;
+}
+#documentation h2{
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+#documentation ul{
+    width: 25%;
+    text-align: left;
+}
+#documentation a{
+    color: #8c3a3a;
 }
 #documentation {
     background: #cfcfcf;
@@ -202,7 +216,11 @@ nav h1{
 }
 /*Documentation*/
 
-@media only screen and (max-width: 600px){
+@media only screen and (max-width: 800px){
+nav h1, #links, #image, #information, #kanyequote{
+    margin-left: auto;
+    margin-right: auto;
+}
 
 nav{
     flex-direction: column;
@@ -211,14 +229,10 @@ nav{
 }
 nav h1{
     text-align: center;
-    margin-right: auto;
-    margin-left: auto;
 }
 #links{
     width: 100%;
     padding: 0;
-    margin-left: auto;
-    margin-right: auto;
     flex-direction: column;
 }
 #links li{
@@ -230,19 +244,17 @@ nav h1{
     width: 100%;
     flex-direction: column;
 }
+#kanyequote{
+    height: auto;
+}
 
 #pokemon{
     flex-direction: column;
 }
-#image{
-    margin-left: auto;
-    margin-right: auto;
+#image, #information{
     margin-bottom: 25px;
 }
 #information{
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 25px;
     width: 80%;
 }
 }
