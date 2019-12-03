@@ -1,0 +1,152 @@
+h1 {
+    margin-top:-30px; 
+    text-align: center
+}
+
+body{
+    padding-bottom: 70px;
+    background:#33422F;
+    color: whitesmoke;
+    font-family: 'Raleway', sans-serif;
+    
+    
+}
+
+@media screen and (min-width:850px){
+}
+
+main{
+  color: #A6E7E6;
+  margin-top: 0;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2.5rem;
+  width: 60vw;   
+  text-align: center;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  font-size: 20px;
+}
+main.proposal{
+  background-color:rgba(12, 12, 10, 0.3);
+  color: #A6E7E6;
+  margin-top: 0;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2.5rem;
+  width: 60vw;   
+  text-align: center;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  font-size: 20px;
+  
+}
+
+
+nav.nav {
+    list-style-type: none;
+    margin: -7px;
+    padding: 0;
+    overflow: hidden;
+    background-color: #0C0C0A;
+  }
+
+  h2{
+      color: #BEB70D;
+  }
+  
+  img.main{
+      height: 90%;
+      width: 90%;
+      margin-top: 40px;
+  }
+
+  a.navItem {
+    display: block;
+    color:#A6E7E6;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    float:left;
+  }
+  
+   a.navItem:hover {
+    background-color: #BEB70D;
+  }
+
+  div.details{
+    text-align: center
+  }
+
+  .grid-container-details {
+    display: grid;
+    grid-column-gap: 50px;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto;
+    /* background-color: #0C0C0A; */
+    color: #A6E7E6;
+    padding-bottom: 50px;
+  }
+
+  .grid-container-details > div {
+    background-color: rgba(12, 12, 10, 0.3);
+    text-align: left;
+    font-size: 18px;
+    max-width: 250px;
+  }
+  
+  .footer {
+    display: block;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #0C0C0A;
+    color: #A6E7E6;
+    text-align: center;  
+  }
+
+  div.pPadding{
+    padding: 10px;
+  }
+
+  p.copyright{
+    text-align:left;
+    margin-left:30px;
+    color:#BEB70D;
+}
+  p.other{
+    text-align:right;
+    margin-right:30px;
+    margin-top: -35px;
+  }
+
+a:visited{
+    color: aquamarine;
+}
+
+a:link{
+  color: #BEB70D;
+}
+a:focus{
+  color: aqua;
+}
+a:active{
+  color: azure;
+}
+
+h1{
+  color:#BEB70D;
+}
+
+h1#documention{
+  color: #BEB70D;
+  text-shadow: 2px 2px #0C0C0A;
+}
+
+h3{
+  text-align: center;
+  color: #BEB70D;
+}
+
+
