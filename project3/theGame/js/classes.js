@@ -18,3 +18,14 @@ class Player extends PIXI.Graphics{
         this.y = Math.sin(angle);
     }
 }
+
+class Wall extends PIXI.Graphics{
+    constructor(color=0x00000,lines=1,startPoint =50){
+        super();
+        this.center=center;
+    }
+}
+
+function Shrink(){
+    this.scale*=0.9;
+}
