@@ -3,8 +3,6 @@ const app = new PIXI.Application(600,600);
 document.body.appendChild(app.view);
 app.backgroundColor= 0x000000;
 
-
-
 // constants
 const sceneWidth = app.view.width;
 const sceneHeight = app.view.height;	
@@ -22,6 +20,7 @@ let startScene;
 let gameScene;
 let gameOverScene;
 let player;
+let centerVoid;
 
 // var vignetteFilter = new VignetteFilter({
 // 	size: 0.5,
@@ -53,9 +52,14 @@ function setup() {
 	// #4 - Create labels for all 3 scenes
 	createLabelsAndButtons();
 	// #5 - Create ship
-    player=new Player();
+    centerVoid=new Player(5,0xF5F5F5,300,300);
+	gameScene.addChild(centerVoid);
+
+	player=new Player(10,0xF5F5F5,280,280);
 	gameScene.addChild(player);
 	
+
+
 	// #8 - Start update loop
     //app.ticker.add(gameLoop);
 	
@@ -73,6 +77,12 @@ function gameLoop(){
 
 function createLabelsAndButtons(){
 
+	let buttonStyle = new PIXI.TextStyle({
+        fill:0xFFFFFF,
+        fontSize:24,
+        fontFamily:'Verdana'
+	});
+	
 	// 1 - set up 'startScene'
     // 1A = make top start label
     let startLabel1= new PIXI.Text("Pentagon");
@@ -80,10 +90,44 @@ function createLabelsAndButtons(){
         fill: 0xFFFFFF,
         fontSize:40,
         fontFamily: 'Verdana',
+        stroke: 0xF9F9F9,
+        strokeThickness:6
+    });
+    startLabel1.x=200;
+    startLabel1.y=200;
+	startScene.addChild(startLabel1);
+	
+	// label 2
+	let startLabel2= new PIXI.Text("Can you Survive..?");
+    startLabel2.style= new PIXI.TextStyle({
+        fill: 0x000000,
+        fontSize:30,
+        fontFamily: 'Verdana',
         stroke: 0xF5F5F5,
         strokeThickness:6
     });
-    startLabel1.x=50;
-    startLabel1.y=120;
-    startScene.addChild(startLabel1);
+    startLabel2.x=160;
+    startLabel2.y=260;
+	startScene.addChild(startLabel2);
+	
+	// start button
+
+	let startButton= new PIXI.Text("Play Now!");
+    startButton.style=buttonStyle;
+    startButton.x=235;
+    startButton.y=sceneHeight- 100;
+    startButton.interactive= true;
+    startButton.buttonMode= true;
+    startButton.on("pointerup",startGame); // startGame function referance
+    startButton.on('pointerover',e=>e.target.alpha=0.7); // concise arrow function with no brackets
+    startButton.on('pointerout',e=>e.currentTarget.alpha= 1.0);
+	startScene.addChild(startButton);
+	
+}
+
+function startGame(){
+    startScene.visible=false;
+    gameOverScene.visible=false;
+    gameScene.visible= true;
+
 }
