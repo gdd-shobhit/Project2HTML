@@ -21,6 +21,12 @@ let gameScene;
 let gameOverScene;
 let player;
 let centerVoid;
+let distance;
+
+// Captures the keyboard arrow keys
+
+let left = keyboard("ArrowLeft"),
+      right = keyboard("ArrowRight");
 
 // var vignetteFilter = new VignetteFilter({
 // 	size: 0.5,
@@ -57,11 +63,12 @@ function setup() {
 
 	player=new Player(10,0xF5F5F5,280,280);
 	gameScene.addChild(player);
-	
 
+	// distance between player and center
+	distance=DistanceBetweenPoints(centerVoid.x,centerVoid.y,player.x,player.y);
 
 	// #8 - Start update loop
-    //app.ticker.add(gameLoop);
+    app.ticker.add(gameLoop);
 	
 	// #9 - Start listening for click events on the canvas
     //app.view.onclick = fireBullet;
@@ -72,7 +79,17 @@ function setup() {
 
 function gameLoop(){
 	let dt=1/app.ticker.FPS;
-	if(dt>1/12)dt=1/12;	
+	if(dt>1/12)dt=1/12;
+	left.press=()=>{
+		player.moveAnticlockwise(distance);
+	}
+	right.press=()=>{
+		player.moveClockwise(distance);
+	}
+	left.release=()=>{
+		player.movement=0;
+	}
+	
 }
 
 function createLabelsAndButtons(){
@@ -131,3 +148,54 @@ function startGame(){
     gameScene.visible= true;
 
 }
+
+function keyboard(value) {
+	let key = {};
+	key.value = value;
+	key.isDown = false;
+	key.isUp = true;
+	key.press = undefined;
+	key.release = undefined;
+	//The `downHandler`
+	key.downHandler = event => {
+	  if (event.key === key.value) {
+		if (key.isUp && key.press) key.press();
+		key.isDown = true;
+		key.isUp = false;
+		event.preventDefault();
+	  }
+	};
+  
+	//The `upHandler`
+	key.upHandler = event => {
+	  if (event.key === key.value) {
+		if (key.isDown && key.release) key.release();
+		key.isDown = false;
+		key.isUp = true;
+		event.preventDefault();
+	  }
+	};
+  
+	//Attach event listeners
+	const downListener = key.downHandler.bind(key);
+	const upListener = key.upHandler.bind(key);
+	
+	window.addEventListener(
+	  "keydown", downListener, false
+	);
+	window.addEventListener(
+	  "keyup", upListener, false
+	);
+	
+	// Detach event listeners
+	key.unsubscribe = () => {
+	  window.removeEventListener("keydown", downListener);
+	  window.removeEventListener("keyup", upListener);
+	};
+	
+	return key;
+  }
+
+  function DistanceBetweenPoints(point1x,point1y,point2x,point2y){
+	  return Math.pow(Math.pow(point2x-point1x,2)+Math.pow(point2y-point1y,2),0.5);
+  }
