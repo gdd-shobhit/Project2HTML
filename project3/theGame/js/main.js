@@ -37,6 +37,16 @@ let wallTimer_Max = 3;
 let left = keyboard("ArrowLeft"),
 	right = keyboard("ArrowRight");
 
+// Captures the keyboard arrow keys
+	  document.addEventListener("keydown",(e)=>{
+		if(e.code==="ArrowLeft"){
+			player.moveAnticlockwise(distance);
+		}
+		if(e.code==="ArrowRight"){
+			player.moveClockwise(distance);
+		} 
+	  })
+	
 // var vignetteFilter = new VignetteFilter({
 // 	size: 0.5,
 // 	amount: 0.5,
@@ -81,7 +91,6 @@ function setup() {
 
 	// #9 - Start listening for click events on the canvas
 	//app.view.onclick = fireBullet;
-
 	// Now our `startScene` is visible
 	// Clicking the button calls startGame()
 }

@@ -17,25 +17,23 @@ class Player extends PIXI.Graphics{
 
     moveAnticlockwise(distance){
        
-        this.angle+=0.1;
+        this.angle-=0.15;
         // this.angle += angle;
         this.x = 300+Math.cos(this.angle)*distance;
         this.y = 300+Math.sin(this.angle)*distance;
         this.moveCenter();
         console.log("x: "+this.x);
-        console.log("y: "+this.y);
-        console.log("angle: "+ this.angle);
-        if(this.angle>=2*Math.PI){
+        
+        if(Math.abs(this.angle)>=2*Math.PI){
             this.angle=0;
-            console.log("here");
         }
       
     }
     moveClockwise(distance){
-        this.angle-=0.1;
+        this.angle+=0.15;
         // this.angle += angle;
-        this.x = Math.cos(this.angle)*distance;
-        this.y = Math.sin(this.angle)*distance;
+        this.x = 300+Math.cos(this.angle)*distance;
+        this.y = 300+Math.sin(this.angle)*distance;
         this.moveCenter();
         if(this.angle>=2*Math.PI){
             this.angle=0;
@@ -84,3 +82,34 @@ class Point{
         this.y = y;
     }
 }
+
+class Particle extends PIXI.Sprite{
+	constructor(radius, x, y, xSpeed, ySpeed){
+		super(particleTexture);
+		this.x = x;
+		this.y = y;
+		this.anchor.set(.5,.5);
+		this.width = radius*2;
+ 		this.height = radius*2;
+		this.radius = radius;
+		this.xSpeed = xSpeed;
+		this.ySpeed = ySpeed;
+		this.tint = 0xA9A9A9;
+	}
+	
+	update(dt, xForce, yForce){
+		this.x += this.xSpeed * dt;
+		this.y += this.ySpeed * dt;
+        
+        this.x += xForce;
+        this.y += yForce;
+        
+        if(this.x < this.radius || this.x > (window.innerWidth - this.radius)) {
+			this.xSpeed *= -1;
+        }
+        
+        if(this.y < this.radius || this.y > (window.innerHeight - this.radius)) {
+			this.ySpeed *= -1;
+        }
+	}
+  }
