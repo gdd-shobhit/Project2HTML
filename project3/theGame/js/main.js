@@ -47,11 +47,6 @@ let wallTimer = 0;
 let wallTimer_Max = 3;
 
 // Captures the keyboard arrow keys
-
-let left = keyboard("ArrowLeft"),
-	right = keyboard("ArrowRight");
-
-// Captures the keyboard arrow keys
 	  document.addEventListener("keydown",(e)=>{
 		if(e.code==="ArrowLeft"){
 			player.moveAnticlockwise(distance);
@@ -93,14 +88,14 @@ function setup() {
 	// #4 - Create labels for all 3 scenes
 	createLabelsAndButtons();
 	// #5 - Create ship
-	centerVoid = new Player(5, 0x696969, 295, 295);
+	centerVoid = new Player(5, 0x696969, 305, 305);
 	gameScene.addChild(centerVoid);
 
-	player = new Player(10, 0x424242,320, 300);
+	player = new Player(10, 0x424242,320, 320);
 	gameScene.addChild(player);
 
 	// distance between player and center
-	distance = DistanceBetweenPoints(centerVoid.x, centerVoid.y, player.x, player.y);
+	distance = DistanceBetweenPoints(centerVoid.center.x, centerVoid.center.y, player.center.x, player.center.y);
 
 	// #8 - Start update loop
 	app.ticker.add(gameLoop);
@@ -171,6 +166,8 @@ function gameLoop() {
 	if (wallTimer > wallTimer_Max){
 		wallTimer = 0;
 	}
+	lifetime++;
+
 }
 
 //Setup all UI elements
@@ -248,7 +245,7 @@ function CalcStartPoints(width, height){
 
 //Create a wall to be added to the game scene
 function CreateWall(){
-	let wall = new Wall(0xFFFFFF, sceneWidth/2, sceneHeight/2, startPoints);
+	let wall = new Wall(0xC0C0C0, sceneWidth/2, sceneHeight/2, startPoints);
 	gameScene.addChild(wall);
 	return wall;
 }
