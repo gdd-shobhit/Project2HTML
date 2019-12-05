@@ -6,12 +6,14 @@ const app = new PIXI.Application({
 	// background: new URL("images/backGround.png")
 });
 document.body.appendChild(app.view);
-app.backgroundColor= 0x000000;
 
 // constants
 const sceneWidth = app.view.width;
 const sceneHeight = app.view.height;	
 
+// adding cursor
+
+app.renderer.plugins.interaction.cursorStyles.default= "url('images/cursor.png'),auto";
 PIXI.loader.
 add(["images/cursor.png"]).
 on("progress",e=>{console.log(`progress=${e.progress}`)}).
@@ -55,6 +57,7 @@ let container, particles, numberOfParticles = 100;
 
 function setup() {
 	stage = app.stage;
+	stage.cursor="url('images/cursor.png'),auto";
 	particleTexture = PIXI.Texture.fromImage('images/particle-6x6.png');
     // #1 - Create the `start` scene
 	startScene= new PIXI.Container();
