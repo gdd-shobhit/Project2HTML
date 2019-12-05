@@ -49,15 +49,38 @@ class Player extends PIXI.Graphics{
 }
 
 class Wall extends PIXI.Graphics{
-    constructor(color=0x00000,lines=1,startPoint =50){
+    constructor(color=0x00000, centerX, centerY, startPoints){
         super();
-        this.center=center;
+        this.pivot.set(centerX, centerY);
+
+        this.lineStyle(4, color, 1);
+        let lines = Math.floor(Math.random() * 5);
+        let index = Math.floor(Math.random() * 5);
+        for (let i = 0; i < lines; i++){
+            if (index > 4)
+                index = 0;
+            this.moveTo(startPoints[index].x, startPoints[index].y);
+            if (index == 4)
+                this.lineTo(startPoints[0].x, startPoints[0].y);
+            else
+                this.lineTo(startPoints[index + 1].x, startPoints[index + 1].y);
+            index++;
+        }
+
+        this.x = centerX;
+        this.y = centerY;
     }
 
     Shrink(){
-        this.scale*=0.9;
+        this.scale.set(this.scale.x * 0.99, this.scale.y * 0.99);
     }
-    
+}
+
+class Point{
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
+    }
 }
 
 class Particle extends PIXI.Sprite{
