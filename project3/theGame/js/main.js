@@ -1,5 +1,10 @@
 "use strict";
-const app = new PIXI.Application(600,600);
+const app = new PIXI.Application({
+	width:600,
+	height:600,
+	backgroundColor:0xF5F5F5
+	// background: new URL("images/backGround.png")
+});
 document.body.appendChild(app.view);
 app.backgroundColor= 0x000000;
 
@@ -24,10 +29,15 @@ let centerVoid;
 let distance;
 
 // Captures the keyboard arrow keys
-
-let left = keyboard("ArrowLeft"),
-      right = keyboard("ArrowRight");
-
+	  document.addEventListener("keydown",(e)=>{
+		if(e.code==="ArrowLeft"){
+			player.moveAnticlockwise(distance);
+		}
+		if(e.code==="ArrowRight"){
+			player.moveClockwise(distance);
+		} 
+	  })
+	
 // var vignetteFilter = new VignetteFilter({
 // 	size: 0.5,
 // 	amount: 0.5,
@@ -58,10 +68,10 @@ function setup() {
 	// #4 - Create labels for all 3 scenes
 	createLabelsAndButtons();
 	// #5 - Create ship
-    centerVoid=new Player(5,0xF5F5F5,300,300);
+    centerVoid=new Player(5,0x696969,295,295);
 	gameScene.addChild(centerVoid);
 
-	player=new Player(10,0xF5F5F5,280,280);
+	player=new Player(10,0x424242,320,300);
 	gameScene.addChild(player);
 
 	// distance between player and center
@@ -80,22 +90,26 @@ function setup() {
 function gameLoop(){
 	let dt=1/app.ticker.FPS;
 	if(dt>1/12)dt=1/12;
-	left.press=()=>{
-		player.moveAnticlockwise(distance);
-	}
-	right.press=()=>{
-		player.moveClockwise(distance);
-	}
-	left.release=()=>{
-		player.movement=0;
-	}
+
+	// left.press=()=>{
+	// 	player.moveAnticlockwise(distance);
+	// }
+	// right.press=()=>{
+	// 	player.moveClockwise(distance);
+	// }
+	// left.release=()=>{
+	// 	player.movement=0;
+	// }
+
 	
 }
+
+
 
 function createLabelsAndButtons(){
 
 	let buttonStyle = new PIXI.TextStyle({
-        fill:0xFFFFFF,
+        fill:0x696969,
         fontSize:24,
         fontFamily:'Verdana'
 	});
@@ -104,11 +118,11 @@ function createLabelsAndButtons(){
     // 1A = make top start label
     let startLabel1= new PIXI.Text("Pentagon");
     startLabel1.style= new PIXI.TextStyle({
-        fill: 0xFFFFFF,
+        fill: 0x000000,
         fontSize:40,
         fontFamily: 'Verdana',
-        stroke: 0xF9F9F9,
-        strokeThickness:6
+        stroke: 0xC0C0C0,
+        strokeThickness:4
     });
     startLabel1.x=200;
     startLabel1.y=200;
@@ -120,8 +134,8 @@ function createLabelsAndButtons(){
         fill: 0x000000,
         fontSize:30,
         fontFamily: 'Verdana',
-        stroke: 0xF5F5F5,
-        strokeThickness:6
+        stroke: 0xC0C0C0,
+        strokeThickness:4
     });
     startLabel2.x=160;
     startLabel2.y=260;

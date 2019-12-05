@@ -17,25 +17,23 @@ class Player extends PIXI.Graphics{
 
     moveAnticlockwise(distance){
        
-        this.angle+=0.1;
+        this.angle-=0.15;
         // this.angle += angle;
         this.x = 300+Math.cos(this.angle)*distance;
         this.y = 300+Math.sin(this.angle)*distance;
         this.moveCenter();
         console.log("x: "+this.x);
-        console.log("y: "+this.y);
-        console.log("angle: "+ this.angle);
-        if(this.angle>=2*Math.PI){
+        
+        if(Math.abs(this.angle)>=2*Math.PI){
             this.angle=0;
-            console.log("here");
         }
       
     }
     moveClockwise(distance){
-        this.angle-=0.1;
+        this.angle+=0.15;
         // this.angle += angle;
-        this.x = Math.cos(this.angle)*distance;
-        this.y = Math.sin(this.angle)*distance;
+        this.x = 300+Math.cos(this.angle)*distance;
+        this.y = 300+Math.sin(this.angle)*distance;
         this.moveCenter();
         if(this.angle>=2*Math.PI){
             this.angle=0;
