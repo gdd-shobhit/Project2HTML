@@ -1,8 +1,8 @@
 "use strict";
 const app = new PIXI.Application({
-	width:600,
-	height:600,
-	backgroundColor:0xF5F5F5
+	width: 600,
+	height: 600,
+	backgroundColor: 0xF5F5F5
 	// background: new URL("images/backGround.png")
 });
 document.body.appendChild(app.view);
@@ -13,7 +13,7 @@ const sceneHeight = app.view.height;
 
 // adding cursor
 
-app.renderer.plugins.interaction.cursorStyles.default= "url('images/cursor.png'),auto";
+app.renderer.plugins.interaction.cursorStyles.default = "url('images/cursor.png'),auto";
 PIXI.loader.
 	add(["images/cursor.png"]).
 	on("progress", e => { console.log(`progress=${e.progress}`) }).
@@ -31,10 +31,10 @@ let centerVoid;
 let distance;
 
 let container, particles, numberOfParticles = 100;
-	let particleTexture
-  	let lifetime = 0;
-	let fpsLabel = document.querySelector('#fps');
-	let enableLateralForce = false, enableVerticalForce = true;
+let particleTexture
+let lifetime = 0;
+let fpsLabel = document.querySelector('#fps');
+let enableLateralForce = false, enableVerticalForce = true;
 
 
 //Setup an array with points to be used with walls
@@ -43,19 +43,19 @@ CalcStartPoints(sceneWidth, sceneHeight);
 
 //variables for delay between wall spawns
 let walls = [];
-let wallTimer = 0; 
+let wallTimer = 0;
 let wallTimer_Max = 3;
 
 // Captures the keyboard arrow keys
-	  document.addEventListener("keydown",(e)=>{
-		if(e.code==="ArrowLeft"){
-			player.moveAnticlockwise(distance);
-		}
-		if(e.code==="ArrowRight"){
-			player.moveClockwise(distance);
-		} 
-	  })
-	
+document.addEventListener("keydown", (e) => {
+	if (e.code === "ArrowLeft") {
+		player.moveAnticlockwise(distance);
+	}
+	if (e.code === "ArrowRight") {
+		player.moveClockwise(distance);
+	}
+})
+
 // var vignetteFilter = new VignetteFilter({
 // 	size: 0.5,
 // 	amount: 0.5,
@@ -67,10 +67,11 @@ let wallTimer_Max = 3;
 
 function setup() {
 	stage = app.stage;
-	stage.cursor="url('images/cursor.png'),auto";
+	stage.cursor = "url('images/cursor.png'),auto";
 	particleTexture = PIXI.Texture.fromImage('images/particle-6x6.png');
+	
 	// #1 - Create the `start` scene
-	startScene= new PIXI.Container();
+	startScene = new PIXI.Container();
 	// startScene.filters.push(vignetteFilter);
 	stage.addChild(startScene);
 
@@ -85,13 +86,15 @@ function setup() {
 	// gameOverScene.filters.push(vignetteFilter);
 	gameOverScene.visible = false;
 	stage.addChild(gameOverScene);
+
 	// #4 - Create labels for all 3 scenes
 	createLabelsAndButtons();
-	// #5 - Create ship
+
+	// #5 - Create the player
 	centerVoid = new Player(5, 0x696969, 305, 305);
 	gameScene.addChild(centerVoid);
 
-	player = new Player(10, 0x424242,320, 320);
+	player = new Player(10, 0x424242, 320, 320);
 	gameScene.addChild(player);
 
 	// distance between player and center
@@ -103,71 +106,67 @@ function setup() {
 	// #9 - Start listening for click events on the canvas
 	//app.view.onclick = fireBullet;
 	createParticles();
-	
+
 	// Now our `startScene` is visible
 	// Clicking the button calls startGame()
 }
 
-const createParticles = ()=>{
-    particles = [];
-    container = new PIXI.particles.ParticleContainer();
-    container.maxSize = 30000;
-    stage.addChild(container);
-    for (let i = 0; i < numberOfParticles; i++) {
-	    let p = new Particle(
-      	  Math.random() * 2 + 1,
-      	  Math.random() * window.innerWidth,
-          Math.random() * window.innerHeight,
-          Math.random() * 180 - 90,
-		  Math.random() * 180 - 90);
-		  
-      	particles.push(p);
-     	container.addChild(p);
-    }
-    
-    // Animate the rotation
-    app.ticker.add(updateParticle);
-  }
+function createParticles() {
+	particles = [];
+	container = new PIXI.particles.ParticleContainer();
+	container.maxSize = 30000;
+	stage.addChild(container);
+	for (let i = 0; i < numberOfParticles; i++) {
+		let p = new Particle(
+			Math.random() * 2 + 1,
+			Math.random() * window.innerWidth,
+			Math.random() * window.innerHeight,
+			Math.random() * 180 - 90,
+			Math.random() * 180 - 90);
 
-  //Main loop for the game, all functionality here
+		particles.push(p);
+		container.addChild(p);
+	}
+}
+
+//Main loop for the game, all functionality here
 function gameLoop() {
 	let dt = 1 / app.ticker.FPS;
 	if (dt > 1 / 12) dt = 1 / 12;
 
-	}
+	//Update any particles
+	updateParticle(dt);
 
-
-	const updateParticle=()=>{
-		let dt=1/app.ticker.FPS;
-		if(dt>1/12)dt=1/12;
-	
-		let sin = Math.sin(lifetime / 60);
-		let cos = Math.cos(lifetime / 60);
-		
-		let xForce = enableLateralForce ? sin * (120 * dt) : 0;
-		let yForce = enableVerticalForce ? cos * (120 * dt) : 0;
-	 
-		for (let p of particles){
-		  p.update(dt, xForce, yForce);
-		}
 	//wall functionality
-	if (wallTimer == 0){
+	if (wallTimer == 0) {
 		walls.push(CreateWall());
 	}
-	for (let i = 0; i < walls.length; i++){
+	for (let i = 0; i < walls.length; i++) {
 		walls[i].Shrink();
-		if (walls[i].scale.x <= 0.01){
+		if (walls[i].scale.x <= 0.01) {
 			walls.shift();
 			return;
 		}
 	}
 
 	wallTimer += dt;
-	if (wallTimer > wallTimer_Max){
+	if (wallTimer > wallTimer_Max) {
 		wallTimer = 0;
 	}
-	lifetime++;
+}
 
+function updateParticle (dt){
+	let sin = Math.sin(lifetime / 60);
+	let cos = Math.cos(lifetime / 60);
+
+	let xForce = enableLateralForce ? sin * (120 * dt) : 0;
+	let yForce = enableVerticalForce ? cos * (120 * dt) : 0;
+
+	for (let p of particles) {
+		p.update(dt, xForce, yForce);
+	}
+
+	lifetime++;
 }
 
 //Setup all UI elements
@@ -235,21 +234,21 @@ function DistanceBetweenPoints(point1x, point1y, point2x, point2y) {
 }
 
 //Calculate all the starting points that a wall could stem from
-function CalcStartPoints(width, height){
-	startPoints.push(new Point(width/2, 0));
-	for (let i = 1; i < 5; i++){
+function CalcStartPoints(width, height) {
+	startPoints.push(new Point(width / 2, 0));
+	for (let i = 1; i < 5; i++) {
 		let angle = DegreeToRad(90) + (DegreeToRad(72) * i)
-		startPoints.push(new Point((width/2) + (Math.cos(angle) * width/2), Math.abs(Math.sin(angle) * height)));
+		startPoints.push(new Point((width / 2) + (Math.cos(angle) * width / 2), Math.abs(Math.sin(angle) * height)));
 	}
 }
 
 //Create a wall to be added to the game scene
-function CreateWall(){
-	let wall = new Wall(0xC0C0C0, sceneWidth/2, sceneHeight/2, startPoints);
+function CreateWall() {
+	let wall = new Wall(0xC0C0C0, sceneWidth / 2, sceneHeight / 2, startPoints);
 	gameScene.addChild(wall);
 	return wall;
 }
 
-function DegreeToRad(degrees){
-	return (Math.PI/180) * degrees;
+function DegreeToRad(degrees) {
+	return (Math.PI / 180) * degrees;
 }
