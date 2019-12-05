@@ -59,3 +59,34 @@ class Wall extends PIXI.Graphics{
     }
     
 }
+
+class Particle extends PIXI.Sprite{
+	constructor(radius, x, y, xSpeed, ySpeed){
+		super(particleTexture);
+		this.x = x;
+		this.y = y;
+		this.anchor.set(.5,.5);
+		this.width = radius*2;
+ 		this.height = radius*2;
+		this.radius = radius;
+		this.xSpeed = xSpeed;
+		this.ySpeed = ySpeed;
+		this.tint = 0xA9A9A9;
+	}
+	
+	update(dt, xForce, yForce){
+		this.x += this.xSpeed * dt;
+		this.y += this.ySpeed * dt;
+        
+        this.x += xForce;
+        this.y += yForce;
+        
+        if(this.x < this.radius || this.x > (window.innerWidth - this.radius)) {
+			this.xSpeed *= -1;
+        }
+        
+        if(this.y < this.radius || this.y > (window.innerHeight - this.radius)) {
+			this.ySpeed *= -1;
+        }
+	}
+  }

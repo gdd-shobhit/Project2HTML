@@ -28,6 +28,12 @@ let player;
 let centerVoid;
 let distance;
 
+let container, particles, numberOfParticles = 100;
+	let particleTexture
+  	let lifetime = 0;
+	let fpsLabel = document.querySelector('#fps');
+	let enableLateralForce = false, enableVerticalForce = true;
+
 // Captures the keyboard arrow keys
 	  document.addEventListener("keydown",(e)=>{
 		if(e.code==="ArrowLeft"){
@@ -49,6 +55,7 @@ let distance;
 
 function setup() {
 	stage = app.stage;
+	particleTexture = PIXI.Texture.fromImage('images/particle-6x6.png');
     // #1 - Create the `start` scene
 	startScene= new PIXI.Container();
 	// startScene.filters.push(vignetteFilter);
@@ -81,30 +88,57 @@ function setup() {
     app.ticker.add(gameLoop);
 	
 	// #9 - Start listening for click events on the canvas
-    //app.view.onclick = fireBullet;
+	//app.view.onclick = fireBullet;
+	createParticles();
 	
 	// Now our `startScene` is visible
 	// Clicking the button calls startGame()
 }
 
+const createParticles = ()=>{
+    particles = [];
+    container = new PIXI.particles.ParticleContainer();
+    container.maxSize = 30000;
+    stage.addChild(container);
+    for (let i = 0; i < numberOfParticles; i++) {
+	    let p = new Particle(
+      	  Math.random() * 2 + 1,
+      	  Math.random() * window.innerWidth,
+          Math.random() * window.innerHeight,
+          Math.random() * 180 - 90,
+		  Math.random() * 180 - 90);
+		  
+      	particles.push(p);
+     	container.addChild(p);
+    }
+    
+    // Animate the rotation
+    app.ticker.add(updateParticle);
+  }
+
 function gameLoop(){
 	let dt=1/app.ticker.FPS;
 	if(dt>1/12)dt=1/12;
-
-	// left.press=()=>{
-	// 	player.moveAnticlockwise(distance);
-	// }
-	// right.press=()=>{
-	// 	player.moveClockwise(distance);
-	// }
-	// left.release=()=>{
-	// 	player.movement=0;
-	// }
-
 	
 }
 
+const updateParticle=()=>{
+	let dt=1/app.ticker.FPS;
+	if(dt>1/12)dt=1/12;
 
+	let sin = Math.sin(lifetime / 60);
+    let cos = Math.cos(lifetime / 60);
+    
+    let xForce = enableLateralForce ? sin * (120 * dt) : 0;
+    let yForce = enableVerticalForce ? cos * (120 * dt) : 0;
+ 
+    for (let p of particles){
+      p.update(dt, xForce, yForce);
+    }
+    
+    lifetime++;
+   
+}
 
 function createLabelsAndButtons(){
 
