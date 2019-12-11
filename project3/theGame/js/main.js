@@ -2,9 +2,9 @@
 const app = new PIXI.Application({
 	width: 600,
 	height: 600,
-	backgroundColor: 0xF5F5F5
-	// background: new URL("images/backGround.png")
+	backgroundColor: 0xF5F5F5,
 });
+
 document.body.appendChild(app.view);
 
 // constants
@@ -19,6 +19,7 @@ PIXI.loader.
 	on("progress", e => { console.log(`progress=${e.progress}`) }).
 	load(setup);
 
+
 // aliases
 let stage;
 
@@ -30,11 +31,20 @@ let player;
 let centerVoid;
 let distance;
 
+let score=0;
 let container, particles, numberOfParticles = 100;
 let particleTexture
 let lifetime = 0;
+let life= 0;
 let fpsLabel = document.querySelector('#fps');
 let enableLateralForce = false, enableVerticalForce = true;
+let startLabel1 = new PIXI.Text("Pentagon");
+let startLabel2 = new PIXI.Text("Can you Survive..?");
+let startButton = new PIXI.Text("Play Now!");
+let gameLabel1 = new PIXI.Text("Score : "+ score);
+let gameLabel2 = new PIXI.Text("Life : "+ life);
+let colorButton = new PIXI.Text("Dark Mode!");
+let lightmode= true;
 
 
 //Setup an array with points to be used with walls
@@ -49,10 +59,10 @@ let wallTimer_Max = 3;
 // Captures the keyboard arrow keys
 document.addEventListener("keydown", (e) => {
 	if (e.code === "ArrowLeft") {
-		player.moveAnticlockwise(distance);
+		player.moveAnticlockwise(distance,centerVoid);
 	}
 	if (e.code === "ArrowRight") {
-		player.moveClockwise(distance);
+		player.moveClockwise(distance,centerVoid);
 	}
 })
 
@@ -69,7 +79,7 @@ function setup() {
 	stage = app.stage;
 	stage.cursor = "url('images/cursor.png'),auto";
 	particleTexture = PIXI.Texture.fromImage('images/particle-6x6.png');
-	
+
 	// #1 - Create the `start` scene
 	startScene = new PIXI.Container();
 	// startScene.filters.push(vignetteFilter);
@@ -136,7 +146,7 @@ function gameLoop() {
 
 	//Update any particles
 	updateParticle(dt);
-
+	
 	//wall functionality
 	if (wallTimer == 0) {
 		walls.push(CreateWall());
@@ -177,10 +187,14 @@ function createLabelsAndButtons() {
 		fontSize: 24,
 		fontFamily: 'Verdana'
 	});
+	let buttonStyle2= new PIXI.TextStyle({
+		fill: 0xa450a6,
+		fontSize: 24,
+		fontFamily: 'Verdana'
+	});
 
 	// 1 - set up 'startScene'
 	// 1A = make top start label
-	let startLabel1 = new PIXI.Text("Pentagon");
 	startLabel1.style = new PIXI.TextStyle({
 		fill: 0x000000,
 		fontSize: 40,
@@ -193,7 +207,6 @@ function createLabelsAndButtons() {
 	startScene.addChild(startLabel1);
 
 	// label 2
-	let startLabel2 = new PIXI.Text("Can you Survive..?");
 	startLabel2.style = new PIXI.TextStyle({
 		fill: 0x000000,
 		fontSize: 30,
@@ -206,8 +219,6 @@ function createLabelsAndButtons() {
 	startScene.addChild(startLabel2);
 
 	// start button
-
-	let startButton = new PIXI.Text("Play Now!");
 	startButton.style = buttonStyle;
 	startButton.x = 235;
 	startButton.y = sceneHeight - 100;
@@ -218,6 +229,47 @@ function createLabelsAndButtons() {
 	startButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
 	startScene.addChild(startButton);
 
+	// 2 - set up 'gameScene'
+	// gamaeLabel Score
+	gameLabel1.style = new PIXI.TextStyle({
+		fill: 0x000000,
+		fontSize: 20,
+		fontFamily: 'Verdana',
+		stroke: 0xC0C0C0,
+		strokeThickness: 4
+	});
+	gameLabel1.x = 10;
+	gameLabel1.y = 10;
+	startScene.addChild(gameLabel1);
+
+	// Life
+
+	
+	gameLabel2.style = new PIXI.TextStyle({
+		fill: 0x000000,
+		fontSize: 20,
+		fontFamily: 'Verdana',
+		stroke: 0xC0C0C0,
+		strokeThickness: 4
+	});
+	gameLabel2.x = 10;
+	gameLabel2.y = 40;
+	startScene.addChild(gameLabel2);
+
+	// button to change color
+	
+	colorButton.style = buttonStyle2;
+	colorButton.x = 400;
+	colorButton.y = 30;
+	colorButton.interactive = true;
+	colorButton.buttonMode = true;
+	colorButton.on("pointerup", changeColor); // colorGame function referance
+	colorButton.on('pointerover', e => e.target.alpha = 0.7); // concise arrow function with no brackets
+	colorButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
+	stage.addChild(colorButton);
+	
+
+
 }
 
 //Make sure the game scene is visible and others are not
@@ -226,6 +278,27 @@ function startGame() {
 	gameOverScene.visible = false;
 	gameScene.visible = true;
 
+}
+function changeColor(){
+	if(lightmode){
+		app.renderer.backgroundColor=0xF5F5F5;
+		startLabel1.style.fill=0x00000;
+		colorButton.text="Dark Mode!";
+		colorButton.style.fill=0xa450a6;
+		startLabel2.style.fill=0x000000;
+		startLabel1.style.stroke=0xC0C0C0;
+	
+	}
+	else{
+		app.renderer.backgroundColor=0x1e1e32;
+		startLabel1.style.stroke=0xfff9a6;
+		startLabel1.style.fill=0xa450a6;
+		startLabel2.style.fill=0xa450a6;
+		colorButton.text="Light Mode!";
+		colorButton.style.fill=0xFFFFFF;
+	}
+	
+	lightmode=!lightmode;
 }
 
 
