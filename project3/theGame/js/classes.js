@@ -74,36 +74,41 @@ class Wall extends PIXI.Graphics {
             index++;
         }
 
+
         this.color = color;
         this.x = centerX;
         this.y = centerY;
     }
 
     Shrink(level) {
+        let distX = this.width/2 - (this.width/2 * 0.99);
+        let distY = this.height/2 - (this.height/2 * 0.99);
         for (let i =0 ; i < this.points.length; i++){
-            let distX = this.width - (this.width * 0.99);
-            let distY = this.height - (this.height * 0.99);
-
             if (this.points[i].x < this.x)
                 this.points[i].x += distX;
-            else if (this.points[i].x > this.x)
+            if(this.points.x >this.x)
                 this.points[i].x -= distX;
 
             if (this.points[i].y < this.y)
                 this.points[i].y += distY;
-            else if (this.points[i].y > this.y)
+            if(this.points[i].y>this.y)
                 this.points[i].y -= distY;
             
-            console.log("I: " + i + " Point: " + this.points[i].x + " Scale: " + this.scale.x);
+            // console.log("I: " + i + " Point: " + this.points[i].x + " Scale: " + this.scale.x);
         }
         this.scale.set(this.scale.x * (0.99/* - (0.01*level)*/), this.scale.y * (0.99 /*- (0.01*level))*/));
     }
 }
 
-class Point {
+class Point extends PIXI.Graphics {
     constructor(x, y) {
+        super();
+        this.beginFill(0xfff9a6);
+        this.drawCircle(0, 0, 7);
+        this.endFill();
         this.x = x;
         this.y = y;
+        this.center = { x: this.x + 7, y: this.y + 7 };
     }
 }
 

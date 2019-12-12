@@ -52,6 +52,7 @@ let colorButton = new PIXI.Text("Dark Mode!");
 let restartButton = new PIXI.Text("Play Again!");
 let darkMode = false;
 let finalScore = 0;
+let debugPoints=[];
 
 
 //Setup an array with points to be used with walls
@@ -61,7 +62,7 @@ CalcStartPoints(sceneWidth, sceneHeight);
 //variables for delay between wall spawns
 let walls = [];
 let wallTimer = 0;
-let wallTimer_Max = 3;
+let wallTimer_Max = 10;
 
 // Captures the keyboard arrow keys
 document.addEventListener("keydown", (e) => {
@@ -150,6 +151,7 @@ function createParticles() {
 	}
 }
 
+
 //Main loop for the game, all functionality here
 function gameLoop() {
 	let dt = 1 / app.ticker.FPS;
@@ -180,14 +182,14 @@ function gameLoop() {
 			for (let j = 0; j < walls[i].points.length - 1; j++){
 				if (CollisionTest(walls[i].points[j], walls[i].points[j + 1], player.center, player.radius))
 					console.log("hit");
-				//else
-					//console.log("nope");
+				else
+					console.log("nope");
 			}
 		}
 
 		if (walls[i].scale.x <= 0.05) {
+			gameScene.removeChild(walls[i]);	
 			walls.shift();
-			return;
 		}
 	}
 
@@ -197,7 +199,7 @@ function gameLoop() {
 	}
 
 	// walls increase every level
-	wallTimer_Max = 5 / level;
+	// wallTimer_Max = 5 / level;
 	wallTimer += dt;
 	if (wallTimer > wallTimer_Max) {
 		wallTimer = 0;
@@ -205,6 +207,12 @@ function gameLoop() {
 	score += 1;
 	finalScore = score;
 	changeFields();
+}
+
+function removeWall(wall){
+	for(let i=0;i<wall.points.length;i++){
+		
+	}
 }
 
 
@@ -444,9 +452,19 @@ function CalcStartPoints(width, height) {
 function CreateWall(color) {
 	let wall = new Wall(color, sceneWidth / 2, sceneHeight / 2, startPoints);
 	gameScene.addChild(wall);
+	CreatePoints(wall,0xfff9a6);
 	return wall;
 }
 
+
+function CreatePoints(wall,color){
+	for(let i=0;i<wall.points.length;i++){
+		gameScene.addChild(wall.points[i]);
+	}
+
+}
+
+// deg to rad
 function DegreeToRad(degrees) {
 	return (Math.PI / 180) * degrees;
 }
@@ -487,10 +505,10 @@ function CollisionTest(p1, p2, center, r) {
 	//console.log(distance);
 	//console.log(closest);
 	if (distance < 20){
-		console.log(closest);
-		//console.log(center);
-		console.log(distance);
-		//console.log(dot);
+		// console.log(closest);
+		// //console.log(center);
+		// console.log(distance);
+		// //console.log(dot);
 	}
 
 	if (distance <= r) {
