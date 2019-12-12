@@ -31,27 +31,27 @@ let player;
 let centerVoid;
 let distance;
 
-let score=0;
+let score = 0;
 let container, particles, numberOfParticles = 100;
 let particleTexture
 let lifetime = 0;
-let life= 0;
-let level=1;
-let timer=0;
+let life = 0;
+let level = 1;
+let timer = 0;
 let fpsLabel = document.querySelector('#fps');
 let enableLateralForce = false, enableVerticalForce = true;
 let startLabel1 = new PIXI.Text("Polygons");
 let startLabel2 = new PIXI.Text("Can you Survive..?");
 let startButton = new PIXI.Text("Play Now!");
-let gameLabel1 = new PIXI.Text("Score : "+ score);
-let gameLabel2 = new PIXI.Text("Life : "+ life);
-let gameLabel3 = new PIXI.Text("Level: "+ life);
-let gameOverLabel1 = new PIXI.Text("Final Score : "+ score);
-let gameOverLabel2 = new PIXI.Text("Level : "+ level);
+let gameLabel1 = new PIXI.Text("Score : " + score);
+let gameLabel2 = new PIXI.Text("Life : " + life);
+let gameLabel3 = new PIXI.Text("Level: " + life);
+let gameOverLabel1 = new PIXI.Text("Final Score : " + score);
+let gameOverLabel2 = new PIXI.Text("Level : " + level);
 let colorButton = new PIXI.Text("Dark Mode!");
 let restartButton = new PIXI.Text("Play Again!");
-let darkMode= false;
-let finalScore=0;
+let darkMode = false;
+let finalScore = 0;
 
 
 //Setup an array with points to be used with walls
@@ -66,10 +66,10 @@ let wallTimer_Max = 3;
 // Captures the keyboard arrow keys
 document.addEventListener("keydown", (e) => {
 	if (e.code === "ArrowLeft") {
-		player.moveAnticlockwise(distance,centerVoid);
+		player.moveAnticlockwise(distance, centerVoid);
 	}
 	if (e.code === "ArrowRight") {
-		player.moveClockwise(distance,centerVoid);
+		player.moveClockwise(distance, centerVoid);
 	}
 })
 
@@ -89,10 +89,10 @@ function setup() {
 
 	// #1 - Create the `start` scene
 	startScene = new PIXI.Container();
-	
+
 	// startScene.filters.push(vignetteFilter);
 	stage.addChild(startScene);
-	
+
 
 	// #2 - Create the main `game` scene and make it invisible
 	gameScene = new PIXI.Container();
@@ -123,7 +123,7 @@ function setup() {
 	app.ticker.add(gameLoop);
 
 	// #9 - Start listening for click events on the canvas
-	
+
 
 	// Create Particles
 	createParticles();
@@ -144,7 +144,7 @@ function createParticles() {
 			Math.random() * window.innerHeight,
 			Math.random() * 180 - 90,
 			Math.random() * 180 - 90);
-		p.tint=0xa450a6;
+		p.tint = 0xa450a6;
 		particles.push(p);
 		container.addChild(p);
 	}
@@ -158,46 +158,57 @@ function gameLoop() {
 	//Update any particles
 	updateParticle(dt);
 	timer++;
-	if(timer>1000){
-		timer=0;
-		level+=1;
+	if (timer > 1000) {
+		timer = 0;
+		level += 1;
 	}
 
 	//wall functionality
 	if (wallTimer == 0) {
-		if(darkMode){
+		if (darkMode) {
 			walls.push(CreateWall(0xa450a6));
 		}
-		else{
+		else {
 			walls.push(CreateWall(0xC0C0C0));
 		}
-		
+
 	}
 	for (let i = 0; i < walls.length; i++) {
 		walls[i].Shrink();
+
+		if (walls[i].scale.x <= 0.1){
+			for (let j = 0; j < walls[i].points.length - 1; j++){
+				if (CollisionTest(walls[i].points[j], walls[i].points[j + 1], player.center, player.radius))
+					console.log("hit");
+				//else
+					//console.log("nope");
+			}
+		}
+
 		if (walls[i].scale.x <= 0.05) {
 			walls.shift();
 			return;
 		}
 	}
+
 	// gains life every 1000pts
-	if(score%1000==0){
-		life+=1;
+	if (score % 1000 == 0) {
+		life += 1;
 	}
 
 	// walls increase every level
-	wallTimer_Max=5/level;
+	wallTimer_Max = 5 / level;
 	wallTimer += dt;
 	if (wallTimer > wallTimer_Max) {
 		wallTimer = 0;
 	}
-	score+=1;
-	finalScore=score;
+	score += 1;
+	finalScore = score;
 	changeFields();
 }
 
 
-function updateParticle (dt){
+function updateParticle(dt) {
 	let sin = Math.sin(lifetime / 60);
 	let cos = Math.cos(lifetime / 60);
 
@@ -211,10 +222,10 @@ function updateParticle (dt){
 	lifetime++;
 }
 
-function changeFields(){
-	gameLabel1.text="Score : "+score;
-	gameLabel2.text="Life : "+life;
-	gameLabel3.text="Level : "+level;
+function changeFields() {
+	gameLabel1.text = "Score : " + score;
+	gameLabel2.text = "Life : " + life;
+	gameLabel3.text = "Level : " + level;
 }
 
 //Setup all UI elements
@@ -225,7 +236,7 @@ function createLabelsAndButtons() {
 		fontSize: 24,
 		fontFamily: 'Verdana'
 	});
-	let buttonStyle2= new PIXI.TextStyle({
+	let buttonStyle2 = new PIXI.TextStyle({
 		fill: 0xa450a6,
 		fontSize: 24,
 		fontFamily: 'Verdana'
@@ -281,7 +292,7 @@ function createLabelsAndButtons() {
 	gameScene.addChild(gameLabel1);
 
 	// Life
-	
+
 	gameLabel2.style = new PIXI.TextStyle({
 		fill: 0x000000,
 		fontSize: 20,
@@ -306,7 +317,7 @@ function createLabelsAndButtons() {
 	gameScene.addChild(gameLabel3);
 
 	// button to change color
-	
+
 	colorButton.style = buttonStyle2;
 	colorButton.x = 400;
 	colorButton.y = 30;
@@ -332,7 +343,7 @@ function createLabelsAndButtons() {
 	gameOverScene.addChild(gameOverLabel1);
 
 	// Level
-	
+
 	gameOverLabel2.style = new PIXI.TextStyle({
 		fill: 0x000000,
 		fontSize: 25,
@@ -345,7 +356,7 @@ function createLabelsAndButtons() {
 	gameOverScene.addChild(gameOverLabel2);
 
 	// button to change color
-	
+
 	restartButton.style = buttonStyle2;
 	restartButton.x = 205;
 	restartButton.y = 350;
@@ -363,56 +374,56 @@ function startGame() {
 	startScene.visible = false;
 	gameOverScene.visible = false;
 	gameScene.visible = true;
-	level=1;
-	score=0;
-	life=2;
+	level = 1;
+	score = 0;
+	life = 2;
 
 
 }
-function changeColor(){
-	if(darkMode){
-		app.renderer.backgroundColor=0xF5F5F5;
-		startLabel1.style.fill=0x00000;
-		colorButton.text="Dark Mode!";
-		colorButton.style.fill=0xa450a6;
-		startLabel2.style.fill=0x000000;
-		startLabel1.style.stroke=0xC0C0C0;
-		startLabel2.style.stroke=0xC0C0C0;
-		gameLabel1.style.fill=0x000000;
-		gameLabel2.style.fill=0x000000;
-		gameLabel3.style.fill=0x000000;
-		gameLabel1.style.stroke=0xC0C0C0;
-		gameLabel2.style.stroke=0xC0C0C0;
-		gameLabel3.style.stroke=0xC0C0C0;
-		startButton.style.fill=0x050505;
-		gameOverLabel1.style.fill=0x000000;
-		gameOverLabel2.style.fill=0x000000;
-		gameOverLabel1.style.stroke=0xC0C0C0;
-		gameOverLabel2.style.stroke=0xC0C0C0;
-	
+function changeColor() {
+	if (darkMode) {
+		app.renderer.backgroundColor = 0xF5F5F5;
+		startLabel1.style.fill = 0x00000;
+		colorButton.text = "Dark Mode!";
+		colorButton.style.fill = 0xa450a6;
+		startLabel2.style.fill = 0x000000;
+		startLabel1.style.stroke = 0xC0C0C0;
+		startLabel2.style.stroke = 0xC0C0C0;
+		gameLabel1.style.fill = 0x000000;
+		gameLabel2.style.fill = 0x000000;
+		gameLabel3.style.fill = 0x000000;
+		gameLabel1.style.stroke = 0xC0C0C0;
+		gameLabel2.style.stroke = 0xC0C0C0;
+		gameLabel3.style.stroke = 0xC0C0C0;
+		startButton.style.fill = 0x050505;
+		gameOverLabel1.style.fill = 0x000000;
+		gameOverLabel2.style.fill = 0x000000;
+		gameOverLabel1.style.stroke = 0xC0C0C0;
+		gameOverLabel2.style.stroke = 0xC0C0C0;
+
 	}
-	else{
-		app.renderer.backgroundColor=0x1e1e32;
-		startLabel1.style.stroke=0xfff9a6;
-		startLabel1.style.fill=0xa450a6;
-		startLabel2.style.fill=0xa450a6;
-		colorButton.text="Light Mode!";
-		colorButton.style.fill=0xFFFFFF;
-		startLabel2.style.stroke=0xfff9a6;
-		startButton.style.fill=0xfff9a6;
-		gameLabel1.style.fill=0xa450a6;
-		gameLabel2.style.fill=0xa450a6;
-		gameLabel3.style.fill=0xa450a6;
-		gameLabel1.style.stroke=0xfff9a6;
-		gameLabel2.style.stroke=0xfff9a6;
-		gameLabel3.style.stroke=0xfff9a6;
-		gameOverLabel1.style.fill=0xa450a6;
-		gameOverLabel2.style.fill=0xa450a6;
-		gameOverLabel1.style.stroke=0xfff9a6;
-		gameOverLabel2.style.stroke=0xfff9a6;
+	else {
+		app.renderer.backgroundColor = 0x1e1e32;
+		startLabel1.style.stroke = 0xfff9a6;
+		startLabel1.style.fill = 0xa450a6;
+		startLabel2.style.fill = 0xa450a6;
+		colorButton.text = "Light Mode!";
+		colorButton.style.fill = 0xFFFFFF;
+		startLabel2.style.stroke = 0xfff9a6;
+		startButton.style.fill = 0xfff9a6;
+		gameLabel1.style.fill = 0xa450a6;
+		gameLabel2.style.fill = 0xa450a6;
+		gameLabel3.style.fill = 0xa450a6;
+		gameLabel1.style.stroke = 0xfff9a6;
+		gameLabel2.style.stroke = 0xfff9a6;
+		gameLabel3.style.stroke = 0xfff9a6;
+		gameOverLabel1.style.fill = 0xa450a6;
+		gameOverLabel2.style.fill = 0xa450a6;
+		gameOverLabel1.style.stroke = 0xfff9a6;
+		gameOverLabel2.style.stroke = 0xfff9a6;
 	}
-	
-	darkMode=!darkMode;
+
+	darkMode = !darkMode;
 }
 
 
@@ -440,14 +451,52 @@ function DegreeToRad(degrees) {
 	return (Math.PI / 180) * degrees;
 }
 
-function end(){
-	startScene.visible=false;
-	gameScene.visible=false;
-	gameOverScene.visible=true;
-	finalScore=score;
-	score=0;
-	life=2;
-	timer=0;
-	wallTimer=0;
+function end() {
+	startScene.visible = false;
+	gameScene.visible = false;
+	gameOverScene.visible = true;
+	finalScore = score;
+	score = 0;
+	life = 2;
+	timer = 0;
+	wallTimer = 0;
 	level = 1;
+}
+
+function CollisionTest(p1, p2, center, r) {
+	let v1 = new Point(center.x - p1.x, center.y - p1.y);
+	let v2 = new Point(p2.x - p1.x, p2.y - p1.y);
+	let magnitude = Math.sqrt(Math.pow(v2.x, 2) + Math.pow(v2.y, 2));
+	v2.x /= magnitude;
+	v2.y /= magnitude;
+
+	let dot = (v1.x * v2.x) + (v1.y * v2.y);
+
+	let closest;
+	if (dot < 0) {
+		closest = new Point(p1.x, p2.y);
+	}
+	else if (dot > 1) {
+		closest = new Point(p2.x, p2.y);
+	}
+	else {
+		closest = new Point(p1.x + (v2.x * dot), p1.y + (v2.y * dot));
+	}
+
+	let distance = Math.sqrt(Math.pow(closest.x - center.x, 2) + Math.pow(closest.y - center.y, 2));
+	//console.log(distance);
+	//console.log(closest);
+	if (distance < 20){
+		console.log(closest);
+		//console.log(center);
+		console.log(distance);
+		//console.log(dot);
+	}
+
+	if (distance <= r) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }

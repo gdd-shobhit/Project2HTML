@@ -49,7 +49,7 @@ class Wall extends PIXI.Graphics {
     constructor(color = 0x00000, centerX, centerY, startPoints) {
         super();
         this.pivot.set(centerX, centerY);
-        this.points
+        this.points = [];
 
         this.lineStyle(12, color, 1);
         let lines = 1 + Math.floor(Math.random() * 4);
@@ -57,22 +57,46 @@ class Wall extends PIXI.Graphics {
         for (let i = 0; i < lines; i++) {
             if (index > 4)
                 index = 0;
+
             this.moveTo(startPoints[index].x, startPoints[index].y);
-            if (index == 4)
+            if (i == 0)
+                this.points.push(new Point(startPoints[index].x, startPoints[index].y));
+
+            if (index == 4){
                 this.lineTo(startPoints[0].x, startPoints[0].y);
-            else
+                this.points.push(new Point(startPoints[0].x, startPoints[0].y));
+            }
+            else{
                 this.lineTo(startPoints[index + 1].x, startPoints[index + 1].y);
+                this.points.push(new Point(startPoints[index + 1].x, startPoints[index + 1].y));
+            }
+
             index++;
         }
 
+        this.color = color;
         this.x = centerX;
         this.y = centerY;
-        console.log(this.height);
-        console.log(lines);
     }
 
     Shrink(level) {
-        this.scale.set(this.scale.x * (0.99-0.005*level), this.scale.y * (0.99-0.005*level));
+        for (let i =0 ; i < this.points.length; i++){
+            let distX = this.width - (this.width * 0.99);
+            let distY = this.height - (this.height * 0.99);
+
+            if (this.points[i].x < this.x)
+                this.points[i].x += distX;
+            else if (this.points[i].x > this.x)
+                this.points[i].x -= distX;
+
+            if (this.points[i].y < this.y)
+                this.points[i].y += distY;
+            else if (this.points[i].y > this.y)
+                this.points[i].y -= distY;
+            
+            console.log("I: " + i + " Point: " + this.points[i].x + " Scale: " + this.scale.x);
+        }
+        this.scale.set(this.scale.x * (0.99/* - (0.01*level)*/), this.scale.y * (0.99 /*- (0.01*level))*/));
     }
 }
 
