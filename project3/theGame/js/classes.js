@@ -49,9 +49,10 @@ class Wall extends PIXI.Graphics {
     constructor(color = 0x00000, centerX, centerY, startPoints) {
         super();
         this.pivot.set(centerX, centerY);
+        this.points
 
-        this.lineStyle(4, color, 1);
-        let lines = Math.floor(Math.random() * 5);
+        this.lineStyle(12, color, 1);
+        let lines = 1 + Math.floor(Math.random() * 4);
         let index = Math.floor(Math.random() * 5);
         for (let i = 0; i < lines; i++) {
             if (index > 4)
@@ -66,6 +67,8 @@ class Wall extends PIXI.Graphics {
 
         this.x = centerX;
         this.y = centerY;
+        console.log(this.height);
+        console.log(lines);
     }
 
     Shrink() {

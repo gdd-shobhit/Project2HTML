@@ -153,7 +153,7 @@ function gameLoop() {
 	}
 	for (let i = 0; i < walls.length; i++) {
 		walls[i].Shrink();
-		if (walls[i].scale.x <= 0.01) {
+		if (walls[i].scale.x <= 0.05) {
 			walls.shift();
 			return;
 		}
