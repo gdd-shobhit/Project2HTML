@@ -36,15 +36,22 @@ let container, particles, numberOfParticles = 100;
 let particleTexture
 let lifetime = 0;
 let life= 0;
+let level=1;
+let timer=0;
 let fpsLabel = document.querySelector('#fps');
 let enableLateralForce = false, enableVerticalForce = true;
-let startLabel1 = new PIXI.Text("Pentagon");
+let startLabel1 = new PIXI.Text("Polygons");
 let startLabel2 = new PIXI.Text("Can you Survive..?");
 let startButton = new PIXI.Text("Play Now!");
 let gameLabel1 = new PIXI.Text("Score : "+ score);
 let gameLabel2 = new PIXI.Text("Life : "+ life);
+let gameLabel3 = new PIXI.Text("Level: "+ life);
+let gameOverLabel1 = new PIXI.Text("Final Score : "+ score);
+let gameOverLabel2 = new PIXI.Text("Level : "+ level);
 let colorButton = new PIXI.Text("Dark Mode!");
-let lightmode= true;
+let restartButton = new PIXI.Text("Play Again!");
+let darkMode= false;
+let finalScore=0;
 
 
 //Setup an array with points to be used with walls
@@ -82,8 +89,10 @@ function setup() {
 
 	// #1 - Create the `start` scene
 	startScene = new PIXI.Container();
+	
 	// startScene.filters.push(vignetteFilter);
 	stage.addChild(startScene);
+	
 
 	// #2 - Create the main `game` scene and make it invisible
 	gameScene = new PIXI.Container();
@@ -101,10 +110,10 @@ function setup() {
 	createLabelsAndButtons();
 
 	// #5 - Create the player
-	centerVoid = new Player(5, 0x696969, 305, 305);
+	centerVoid = new Player(4, 0xa450a6, 305, 305);
 	gameScene.addChild(centerVoid);
 
-	player = new Player(10, 0x424242, 320, 320);
+	player = new Player(7, 0xded237, 315, 315);
 	gameScene.addChild(player);
 
 	// distance between player and center
@@ -114,7 +123,9 @@ function setup() {
 	app.ticker.add(gameLoop);
 
 	// #9 - Start listening for click events on the canvas
-	//app.view.onclick = fireBullet;
+	
+
+	// Create Particles
 	createParticles();
 
 	// Now our `startScene` is visible
@@ -133,7 +144,7 @@ function createParticles() {
 			Math.random() * window.innerHeight,
 			Math.random() * 180 - 90,
 			Math.random() * 180 - 90);
-
+		p.tint=0xa450a6;
 		particles.push(p);
 		container.addChild(p);
 	}
@@ -146,10 +157,21 @@ function gameLoop() {
 
 	//Update any particles
 	updateParticle(dt);
-	
+	timer++;
+	if(timer>1000){
+		timer=0;
+		level+=1;
+	}
+
 	//wall functionality
 	if (wallTimer == 0) {
-		walls.push(CreateWall());
+		if(darkMode){
+			walls.push(CreateWall(0xa450a6));
+		}
+		else{
+			walls.push(CreateWall(0xC0C0C0));
+		}
+		
 	}
 	for (let i = 0; i < walls.length; i++) {
 		walls[i].Shrink();
@@ -158,12 +180,22 @@ function gameLoop() {
 			return;
 		}
 	}
+	// gains life every 1000pts
+	if(score%1000==0){
+		life+=1;
+	}
 
+	// walls increase every level
+	wallTimer_Max=5/level;
 	wallTimer += dt;
 	if (wallTimer > wallTimer_Max) {
 		wallTimer = 0;
 	}
+	score+=1;
+	finalScore=score;
+	changeFields();
 }
+
 
 function updateParticle (dt){
 	let sin = Math.sin(lifetime / 60);
@@ -177,6 +209,12 @@ function updateParticle (dt){
 	}
 
 	lifetime++;
+}
+
+function changeFields(){
+	gameLabel1.text="Score : "+score;
+	gameLabel2.text="Life : "+life;
+	gameLabel3.text="Level : "+level;
 }
 
 //Setup all UI elements
@@ -236,25 +274,36 @@ function createLabelsAndButtons() {
 		fontSize: 20,
 		fontFamily: 'Verdana',
 		stroke: 0xC0C0C0,
-		strokeThickness: 4
+		strokeThickness: 3
 	});
 	gameLabel1.x = 10;
 	gameLabel1.y = 10;
-	startScene.addChild(gameLabel1);
+	gameScene.addChild(gameLabel1);
 
 	// Life
-
 	
 	gameLabel2.style = new PIXI.TextStyle({
 		fill: 0x000000,
 		fontSize: 20,
 		fontFamily: 'Verdana',
 		stroke: 0xC0C0C0,
-		strokeThickness: 4
+		strokeThickness: 3
 	});
 	gameLabel2.x = 10;
 	gameLabel2.y = 40;
-	startScene.addChild(gameLabel2);
+	gameScene.addChild(gameLabel2);
+
+	// level
+	gameLabel3.style = new PIXI.TextStyle({
+		fill: 0x000000,
+		fontSize: 20,
+		fontFamily: 'Verdana',
+		stroke: 0xC0C0C0,
+		strokeThickness: 3
+	});
+	gameLabel3.x = 10;
+	gameLabel3.y = 70;
+	gameScene.addChild(gameLabel3);
 
 	// button to change color
 	
@@ -267,8 +316,45 @@ function createLabelsAndButtons() {
 	colorButton.on('pointerover', e => e.target.alpha = 0.7); // concise arrow function with no brackets
 	colorButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
 	stage.addChild(colorButton);
-	
 
+	// GameOver Scene
+
+	//Score
+	gameOverLabel1.style = new PIXI.TextStyle({
+		fill: 0x000000,
+		fontSize: 30,
+		fontFamily: 'Verdana',
+		stroke: 0xC0C0C0,
+		strokeThickness: 3
+	});
+	gameOverLabel1.x = 170;
+	gameOverLabel1.y = 180;
+	gameOverScene.addChild(gameOverLabel1);
+
+	// Level
+	
+	gameOverLabel2.style = new PIXI.TextStyle({
+		fill: 0x000000,
+		fontSize: 25,
+		fontFamily: 'Verdana',
+		stroke: 0xC0C0C0,
+		strokeThickness: 3
+	});
+	gameOverLabel2.x = 210;
+	gameOverLabel2.y = 250;
+	gameOverScene.addChild(gameOverLabel2);
+
+	// button to change color
+	
+	restartButton.style = buttonStyle2;
+	restartButton.x = 205;
+	restartButton.y = 350;
+	restartButton.interactive = true;
+	restartButton.buttonMode = true;
+	restartButton.on("pointerup", startGame); // colorGame function referance
+	restartButton.on('pointerover', e => e.target.alpha = 0.7); // concise arrow function with no brackets
+	restartButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
+	gameOverScene.addChild(restartButton);
 
 }
 
@@ -277,16 +363,32 @@ function startGame() {
 	startScene.visible = false;
 	gameOverScene.visible = false;
 	gameScene.visible = true;
+	level=1;
+	score=0;
+	life=2;
+
 
 }
 function changeColor(){
-	if(lightmode){
+	if(darkMode){
 		app.renderer.backgroundColor=0xF5F5F5;
 		startLabel1.style.fill=0x00000;
 		colorButton.text="Dark Mode!";
 		colorButton.style.fill=0xa450a6;
 		startLabel2.style.fill=0x000000;
 		startLabel1.style.stroke=0xC0C0C0;
+		startLabel2.style.stroke=0xC0C0C0;
+		gameLabel1.style.fill=0x000000;
+		gameLabel2.style.fill=0x000000;
+		gameLabel3.style.fill=0x000000;
+		gameLabel1.style.stroke=0xC0C0C0;
+		gameLabel2.style.stroke=0xC0C0C0;
+		gameLabel3.style.stroke=0xC0C0C0;
+		startButton.style.fill=0x050505;
+		gameOverLabel1.style.fill=0x000000;
+		gameOverLabel2.style.fill=0x000000;
+		gameOverLabel1.style.stroke=0xC0C0C0;
+		gameOverLabel2.style.stroke=0xC0C0C0;
 	
 	}
 	else{
@@ -296,9 +398,21 @@ function changeColor(){
 		startLabel2.style.fill=0xa450a6;
 		colorButton.text="Light Mode!";
 		colorButton.style.fill=0xFFFFFF;
+		startLabel2.style.stroke=0xfff9a6;
+		startButton.style.fill=0xfff9a6;
+		gameLabel1.style.fill=0xa450a6;
+		gameLabel2.style.fill=0xa450a6;
+		gameLabel3.style.fill=0xa450a6;
+		gameLabel1.style.stroke=0xfff9a6;
+		gameLabel2.style.stroke=0xfff9a6;
+		gameLabel3.style.stroke=0xfff9a6;
+		gameOverLabel1.style.fill=0xa450a6;
+		gameOverLabel2.style.fill=0xa450a6;
+		gameOverLabel1.style.stroke=0xfff9a6;
+		gameOverLabel2.style.stroke=0xfff9a6;
 	}
 	
-	lightmode=!lightmode;
+	darkMode=!darkMode;
 }
 
 
@@ -316,12 +430,24 @@ function CalcStartPoints(width, height) {
 }
 
 //Create a wall to be added to the game scene
-function CreateWall() {
-	let wall = new Wall(0xC0C0C0, sceneWidth / 2, sceneHeight / 2, startPoints);
+function CreateWall(color) {
+	let wall = new Wall(color, sceneWidth / 2, sceneHeight / 2, startPoints);
 	gameScene.addChild(wall);
 	return wall;
 }
 
 function DegreeToRad(degrees) {
 	return (Math.PI / 180) * degrees;
+}
+
+function end(){
+	startScene.visible=false;
+	gameScene.visible=false;
+	gameOverScene.visible=true;
+	finalScore=score;
+	score=0;
+	life=2;
+	timer=0;
+	wallTimer=0;
+	level = 1;
 }
