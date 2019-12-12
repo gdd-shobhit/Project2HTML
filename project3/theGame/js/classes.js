@@ -68,8 +68,8 @@ class Wall extends PIXI.Graphics {
         this.y = centerY;
     }
 
-    Shrink() {
-        this.scale.set(this.scale.x * 0.99, this.scale.y * 0.99);
+    Shrink(level) {
+        this.scale.set(this.scale.x * (0.99-0.005*level), this.scale.y * (0.99-0.005*level));
     }
 }
 
@@ -91,7 +91,7 @@ class Particle extends PIXI.Sprite {
         this.radius = radius;
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
-        this.tint = 0xA9A9A9;
+        // this.tint = 0xA9A9A9;
     }
 
     update(dt, xForce, yForce) {
