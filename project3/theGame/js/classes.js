@@ -60,15 +60,15 @@ class Wall extends PIXI.Graphics {
 
             this.moveTo(startPoints[index].x, startPoints[index].y);
             if (i == 0)
-                this.points.push(new Point(startPoints[index].x, startPoints[index].y));
+                this.points.push(new Point(startPoints[index].x, startPoints[index].y,0xded237));
 
             if (index == 4){
                 this.lineTo(startPoints[0].x, startPoints[0].y);
-                this.points.push(new Point(startPoints[0].x, startPoints[0].y));
+                this.points.push(new Point(startPoints[0].x, startPoints[0].y,0xded237));
             }
             else{
                 this.lineTo(startPoints[index + 1].x, startPoints[index + 1].y);
-                this.points.push(new Point(startPoints[index + 1].x, startPoints[index + 1].y));
+                this.points.push(new Point(startPoints[index + 1].x, startPoints[index + 1].y,0xded237));
             }
 
             index++;
@@ -103,8 +103,7 @@ function UpdatePoints(point,distance){
 			}
 			else if(point.y<300){
 				point.x=300+Math.abs(distance*Math.sin(point.angle));
-                point.y=300-Math.abs(distance*Math.cos(point.angle));	
-              
+                point.y=300-Math.abs(distance*Math.cos(point.angle));
 				
             }
             else{
@@ -133,9 +132,10 @@ function UpdatePoints(point,distance){
 }
 
 class Point extends PIXI.Graphics {
-    constructor(x, y) {
+    constructor(x, y,fill) {
         super();
-        this.beginFill(0xded237);
+        // 0xded237
+        this.beginFill(fill);
         this.drawCircle(0, 0, 3);
         this.endFill();
         this.x = x;
