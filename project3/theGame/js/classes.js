@@ -136,12 +136,12 @@ class Point extends PIXI.Graphics {
         super();
         // 0xded237
         this.beginFill(fill);
-        this.drawCircle(0, 0, 3);
+        this.drawCircle(0, 0, 0);
         this.endFill();
         this.x = x;
         this.y = y;
         this.center
-        this.center = { x: this.x + 3, y: this.y + 3 };
+        this.center = { x: this.x, y: this.y };
         this.distance=0;
         this.angle=0;
     }

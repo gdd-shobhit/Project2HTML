@@ -502,7 +502,6 @@ function UpdateAngleOnPoints(wall){
 		let slope= (wall.points[i].y-300)/(wall.points[i].x-300);
 		wall.points[i].angle=Math.atan(slope);
 	}	
-	
 }
 
 // deg to rad
@@ -516,7 +515,6 @@ function end() {
 	startScreen=true;
 	if(walls[0]!=null){
 		gameScene.removeChild(walls[0]);
-		console.log("removed");
 	}
 	// console.log(walls.length);
 	// console.log(walls[0].points.length);
