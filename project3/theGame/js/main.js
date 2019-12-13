@@ -202,7 +202,7 @@ function gameLoop() {
 	}
 
 	// walls increase every level
-	// wallTimer_Max = 5 / level;
+	wallTimer_Max = 5 / level;
 	wallTimer += dt;
 	if (wallTimer > wallTimer_Max) {
 		wallTimer = 0;
@@ -458,6 +458,7 @@ function CreateWall(color) {
 function CreatePoints(wall,color){
 	for(let i=0;i<wall.points.length;i++){
 		gameScene.addChild(wall.points[i]);
+	
 	}
 	Distance(wall);
 }
@@ -465,6 +466,7 @@ function CreatePoints(wall,color){
 function Distance(wall){
 	for(let i=0;i<wall.points.length;i++){
 		wall.points[i].distance= DistanceBetweenPoints(wall.points[i].center.x,wall.points[i].center.y,300,300);	
+		
 	}
 	UpdateAngleOnPoints(wall);
 }
@@ -475,7 +477,6 @@ function UpdateAngleOnPoints(wall){
 	for(let i=0;i<wall.points.length;i++){
 		let slope= (wall.points[i].y-300)/(wall.points[i].x-300);
 		wall.points[i].angle=Math.atan(slope);
-		// console.log(slope);
 	}	
 	
 }
