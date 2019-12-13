@@ -59,6 +59,7 @@ const hsKey= "sd5936-hs";
 const hsLevel="sd5936-hsL";
 let startScreen = true;
 let highLevel=1;
+let backgroundSound,inGameSound;
 
 
 
@@ -124,6 +125,17 @@ function setup() {
 	player = new Player(7, 0xded237, 315, 315);
 	gameScene.addChild(player);
 
+	// #6 - Load Sounds
+    backgroundSound = new Howl({
+		src: ['../sounds/background.mp3'],
+		loop:true
+	});
+	inGameSound= new Howl({
+		src:['../sounds/inGame.mp3'],
+		loop:true
+	})
+
+	backgroundSound.play();
 	// distance between player and center
 	distance = DistanceBetweenPoints(centerVoid.center.x, centerVoid.center.y, player.center.x, player.center.y);
 
@@ -400,6 +412,7 @@ function createLabelsAndButtons() {
 //Make sure the game scene is visible and others are not
 function startGame() {
 	paused=false;
+	backgroundSound.stop();
 	startScreen=false;
 	startScene.visible = false;
 	gameOverScene.visible = false;
@@ -407,6 +420,7 @@ function startGame() {
 	level = 1;
 	score = 0;
 	life = 500;
+	inGameSound.play();
 
 
 }
@@ -513,6 +527,8 @@ function DegreeToRad(degrees) {
 function end() {
 	// paused=true;
 	startScreen=true;
+	inGameSound.stop();
+	backgroundSound.stop();
 	if(walls[0]!=null){
 		gameScene.removeChild(walls[0]);
 	}
