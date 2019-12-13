@@ -177,13 +177,16 @@ function gameLoop() {
 	}
 	for (let i = 0; i < walls.length; i++) {
 		walls[i].Shrink();
-
 		if (walls[i].scale.x <= 0.1){
 			for (let j = 0; j < walls[i].points.length - 1; j++){
 				if (CollisionTest(walls[i].points[j], walls[i].points[j + 1], player.center, player.radius))
-					console.log("hit");
-				else
-					console.log("nope");
+					{
+						// console.log("hit");
+					}
+				else{
+						// console.log("nope");
+				}
+					
 			}
 		}
 
@@ -209,11 +212,6 @@ function gameLoop() {
 	changeFields();
 }
 
-function removeWall(wall){
-	for(let i=0;i<wall.points.length;i++){
-		
-	}
-}
 
 
 function updateParticle(dt) {
@@ -461,13 +459,32 @@ function CreatePoints(wall,color){
 	for(let i=0;i<wall.points.length;i++){
 		gameScene.addChild(wall.points[i]);
 	}
+	Distance(wall);
+}
 
+function Distance(wall){
+	for(let i=0;i<wall.points.length;i++){
+		wall.points[i].distance= DistanceBetweenPoints(wall.points[i].center.x,wall.points[i].center.y,300,300);	
+	}
+	UpdateAngleOnPoints(wall);
+}
+
+function UpdateAngleOnPoints(wall){
+
+	let slope;
+	for(let i=0;i<wall.points.length;i++){
+		let slope= (wall.points[i].y-300)/(wall.points[i].x-300);
+		wall.points[i].angle=Math.atan(slope);
+		// console.log(slope);
+	}	
+	
 }
 
 // deg to rad
 function DegreeToRad(degrees) {
 	return (Math.PI / 180) * degrees;
 }
+
 
 function end() {
 	startScene.visible = false;

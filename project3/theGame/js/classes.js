@@ -81,36 +81,87 @@ class Wall extends PIXI.Graphics {
     }
 
     Shrink(level) {
-        let distX = this.width/2 - (this.width/2 * 0.99);
-        let distY = this.height/2 - (this.height/2 * 0.99);
-        for (let i =0 ; i < this.points.length; i++){
-            if (this.points[i].x < this.x)
-                this.points[i].x += distX;
-            if(this.points.x >this.x)
-                this.points[i].x -= distX;
-
-            if (this.points[i].y < this.y)
-                this.points[i].y += distY;
-            if(this.points[i].y>this.y)
-                this.points[i].y -= distY;
-            
-            // console.log("I: " + i + " Point: " + this.points[i].x + " Scale: " + this.scale.x);
+        for(let i=0;i<this.points.length;i++){
+            this.points[i].distance=this.points[i].distance*0.99;
+            // console.log("I : "+ i + " distance: "+this.points[i].distance);
+            UpdatePoints(this.points[i],this.points[i].distance);        
         }
+        
         this.scale.set(this.scale.x * (0.99/* - (0.01*level)*/), this.scale.y * (0.99 /*- (0.01*level))*/));
     }
+
+}
+
+function UpdatePoints(point,distance){
+
+		// console.log(point.distance);
+		// console.log(wall.points.length);
+		if(point.x>300){
+			if(point.y>300){
+				point.x=300+distance*Math.sin(point.angle);
+                point.y=300+distance*Math.cos(point.angle);
+                // console.log(point.distance);
+			}
+			else if(point.y<300){
+                console.log(point.angle);
+				point.x=300+distance*Math.sin(point.angle);
+                point.y=300+distance*Math.cos(point.angle);	
+                console.log(distance);	
+				
+            }
+            else{
+                point.x=300+distance*Math.sin(point.angle);
+            }
+			// else{
+			// 	wall.points[i].x=300+wall.points[i].distance*Math.sin(wall.points[i].angle);
+			// }
+		// }
+        }
+        if(point.x==300){
+            
+            point.y=300-distance;
+
+        }
+		// else if(wall.points[i].x<300){
+		// 	if(wall.points[i].y>300){
+		// 		wall.points[i].x=300-wall.points[i].distance*Math.sin(wall.points[i].angle);
+		// 		wall.points[i].y=300+wall.points[i].distance*Math.cos(wall.points[i].angle);
+		// 	}
+		// 	else if(wall.points[i].y>300){
+		// 		wall.points[i].x=300-wall.points[i].distance*Math.sin(wall.points[i].angle);
+		// 		wall.points[i].y=300-wall.points[i].distance*Math.cos(wall.points[i].angle);
+		// 	}
+		// 	else{
+		// 		wall.points[i].x=300-wall.points[i].distance*Math.sin(wall.points[i].angle);
+		// 	}
+		// }
+		// else{
+		// 	if(wall.points[i].y>300){
+		// 		wall.points[i].y=300+wall.points[i].distance*Math.cos(wall.points[i].angle);
+		// 	}
+		// 	else{
+		// 		wall.points[i].y=300-wall.points[i].distance*Math.cos(wall.points[i].angle);
+		// 	}
+
+			// }					
+		
 }
 
 class Point extends PIXI.Graphics {
     constructor(x, y) {
         super();
-        this.beginFill(0xfff9a6);
+        this.beginFill(0xded237);
         this.drawCircle(0, 0, 7);
         this.endFill();
         this.x = x;
         this.y = y;
+        this.center
         this.center = { x: this.x + 7, y: this.y + 7 };
+        this.distance=0;
+        this.angle=0;
     }
 }
+
 
 class Particle extends PIXI.Sprite {
     constructor(radius, x, y, xSpeed, ySpeed) {
