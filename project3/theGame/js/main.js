@@ -42,6 +42,7 @@ let fpsLabel = document.querySelector('#fps');
 let enableLateralForce = false, enableVerticalForce = true;
 let startLabel1 = new PIXI.Text("Polygons");
 let startLabel2 = new PIXI.Text("Can you Survive..?");
+let startLabel3 = new PIXI.Text("Left/Right Arrow \nfor Anti/Clockwise Movement");
 let startButton = new PIXI.Text("Play Now!");
 let gameLabel1 = new PIXI.Text("Score : " + score);
 let gameLabel2 = new PIXI.Text("Life : " + life);
@@ -316,6 +317,19 @@ function createLabelsAndButtons() {
 	startLabel2.y = 260;
 	startScene.addChild(startLabel2);
 
+	// label 3
+
+	startLabel3.style = new PIXI.TextStyle({
+		fill: 0x000000,
+		fontSize: 16,
+		fontFamily: 'Verdana',
+		stroke: 0xC0C0C0,
+		strokeThickness: 3
+	});
+	startLabel3.x = 10;
+	startLabel3.y = 30;
+	startScene.addChild(startLabel3);
+
 	// start button
 	startButton.style = buttonStyle;
 	startButton.x = 235;
@@ -455,8 +469,10 @@ function changeColor() {
 		colorButton.text = "Dark Mode!";
 		colorButton.style.fill = 0xa450a6;
 		startLabel2.style.fill = 0x000000;
+		startLabel3.style.fill = 0x000000;
 		startLabel1.style.stroke = 0xC0C0C0;
 		startLabel2.style.stroke = 0xC0C0C0;
+		startLabel3.style.stroke = 0xC0C0C0;
 		gameLabel1.style.fill = 0x000000;
 		gameLabel2.style.fill = 0x000000;
 		gameLabel3.style.fill = 0x000000;
@@ -483,9 +499,11 @@ function changeColor() {
 		startLabel1.style.stroke = 0xfff9a6;
 		startLabel1.style.fill = 0xa450a6;
 		startLabel2.style.fill = 0xa450a6;
+		startLabel3.style.fill = 0xa450a6;
 		colorButton.text = "Light Mode!";
 		colorButton.style.fill = 0xFFFFFF;
 		startLabel2.style.stroke = 0xfff9a6;
+		startLabel3.style.stroke = 0xfff9a6;
 		startButton.style.fill = 0xfff9a6;
 		gameLabel1.style.fill = 0xa450a6;
 		gameLabel2.style.fill = 0xa450a6;
