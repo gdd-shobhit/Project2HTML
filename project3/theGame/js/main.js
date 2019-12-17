@@ -59,8 +59,8 @@ let paused = false;
 const hsKey = "sd5936-hs";
 const hsLevel = "sd5936-hsL";
 let startScreen = true;
-let highLevel = 1;
-let backgroundSound, inGameSound;
+let highLevel=1;
+let backgroundSound,inGameSoundLightMode,inGameSoundDarkMode,gameOverSound;
 
 
 
@@ -128,14 +128,26 @@ function setup() {
 	gameScene.addChild(player);
 
 	// #6 - Load Sounds
-	backgroundSound = new Howl({
-		src: ['../sounds/background.mp3'],
-		loop: true
+    backgroundSound = new Howl({
+		src: ['../sounds/MainMenu.mp3'],
+		loop:true
 	});
-	inGameSound = new Howl({
-		src: ['../sounds/inGame.mp3'],
-		loop: true
+	inGameSoundLightMode= new Howl({
+		src:['../sounds/inGame.mp3'],
+		loop:true
 	})
+
+	inGameSoundDarkMode= new Howl({
+		src:['../sounds/MainGame.mp3'],
+		loop:true
+	})
+
+	
+	gameOverSound= new Howl({
+		src:['../sounds/GameOver.mp3'],
+		loop:true
+	})
+
 
 	backgroundSound.play();
 	// distance between player and center
@@ -154,9 +166,6 @@ function setup() {
 	}
 	// Create Particles
 	createParticles();
-
-	// Now our `startScene` is visible
-	// Clicking the button calls startGame()
 }
 
 //function that creates some particles to float around
@@ -411,8 +420,8 @@ function createLabelsAndButtons() {
 	restartButton.y = 350;
 	restartButton.interactive = true;
 	restartButton.buttonMode = true;
-	restartButton.on("pointerup", startGame); // colorGame function referance
-	restartButton.on('pointerover', e => e.target.alpha = 0.7); // concise arrow function with no brackets
+	restartButton.on("pointerup", startGame); 
+	restartButton.on('pointerover', e => e.target.alpha = 0.7);
 	restartButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
 	gameOverScene.addChild(restartButton);
 
@@ -422,20 +431,37 @@ function createLabelsAndButtons() {
 function startGame() {
 	paused = false;
 	backgroundSound.stop();
-	startScreen = false;
+	gameOverSound.stop();
+	startScreen=false;
 	startScene.visible = false;
 	gameOverScene.visible = false;
 	gameScene.visible = true;
 	level = 1;
 	score = 0;
 	life = 500;
-	inGameSound.play();
+	if(darkMode){
+		inGameSoundDarkMode.play();
+	}
+	else{
+		inGameSoundLightMode.play();
+	}
+	
+
+
 }
 
 //Change the color of the scene based on the chosen mode,
 //either light or dark
 function changeColor() {
 	if (darkMode) {
+		if(gameOverScene.visible){
+
+		}
+		else{
+			inGameSoundDarkMode.stop();
+			inGameSoundLightMode.play();
+		}
+		
 		app.renderer.backgroundColor = 0xF5F5F5;
 		startLabel1.style.fill = 0x00000;
 		colorButton.text = "Dark Mode!";
@@ -459,6 +485,14 @@ function changeColor() {
 
 	}
 	else {
+
+		if(gameOverScene.visible){
+
+		}
+		else{
+			inGameSoundDarkMode.play();
+			inGameSoundLightMode.stop();
+		}
 		app.renderer.backgroundColor = 0x1e1e32;
 		startLabel1.style.stroke = 0xfff9a6;
 		startLabel1.style.fill = 0xa450a6;
@@ -528,8 +562,7 @@ function DegreeToRad(degrees) {
 //scene once the player has run out of life
 function end() {
 	// paused=true;
-	startScreen = true;
-	inGameSound.stop();
+	startScreen=true;
 	backgroundSound.stop();
 	if (walls[0] != null) {
 		gameScene.removeChild(walls[0]);
@@ -546,7 +579,14 @@ function end() {
 	gameOverLabel2.text = `Highest Level: ${localStorage.getItem(hsLevel)}`;
 	gameOverScene.visible = true;
 	gameScene.visible = false;
-
+	if(darkMode){
+		inGameSoundDarkMode.stop();
+	}
+	else{
+		inGameSoundLightMode.stop();
+	}
+	gameOverSound.play();
+	
 	// score = 0;
 	// life = 2;
 	// timer = 0;
@@ -572,7 +612,7 @@ function CollisionTest(p1, p2, center, r) {
 	}
 
 	let distance = DistanceBetweenPoints(center.x, center.y, closest.x, closest.y);
-	
+
 	//See if the distance between the point and the player is less than the radius
 	if (distance <= r) {
 		return true;
