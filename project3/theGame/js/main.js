@@ -43,6 +43,7 @@ let enableLateralForce = false, enableVerticalForce = true;
 let startLabel1 = new PIXI.Text("Polygons");
 let startLabel2 = new PIXI.Text("Can you Survive..?");
 let startLabel3 = new PIXI.Text("Left/Right Arrow \nfor Anti/Clockwise Movement");
+let startLabel4 = new PIXI.Text("Goal: Get your Yellow ball out of polygons!");
 let startButton = new PIXI.Text("Play Now!");
 let gameLabel1 = new PIXI.Text("Score : " + score);
 let gameLabel2 = new PIXI.Text("Life : " + life);
@@ -324,6 +325,19 @@ function createLabelsAndButtons() {
 	startLabel3.y = 30;
 	startScene.addChild(startLabel3);
 
+	// label 4
+
+	startLabel4.style = new PIXI.TextStyle({
+		fill: 0x000000,
+		fontSize: 16,
+		fontFamily: 'Verdana',
+		stroke: 0xC0C0C0,
+		strokeThickness: 3
+	});
+	startLabel4.x = 10;
+	startLabel4.y = sceneHeight-200;
+	startScene.addChild(startLabel4);
+
 	// start button
 	startButton.style = buttonStyle;
 	startButton.x = 235;
@@ -430,6 +444,7 @@ function createLabelsAndButtons() {
 function startGame() {
 	paused = false;
 	backgroundSound.stop();
+	
 	gameOverSound.stop();
 	startScreen = false;
 	startScene.visible = false;
@@ -453,7 +468,8 @@ function changeColor() {
 		if (gameOverScene.visible) {
 
 		}
-		else {
+
+		else{
 			inGameSoundDarkMode.stop();
 			inGameSoundLightMode.play();
 		}
@@ -464,9 +480,11 @@ function changeColor() {
 		colorButton.style.fill = 0xa450a6;
 		startLabel2.style.fill = 0x000000;
 		startLabel3.style.fill = 0x000000;
+		startLabel4.style.fill = 0x000000;
 		startLabel1.style.stroke = 0xC0C0C0;
 		startLabel2.style.stroke = 0xC0C0C0;
 		startLabel3.style.stroke = 0xC0C0C0;
+		startLabel4.style.stroke = 0xC0C0C0;
 		gameLabel1.style.fill = 0x000000;
 		gameLabel2.style.fill = 0x000000;
 		gameLabel3.style.fill = 0x000000;
@@ -494,10 +512,12 @@ function changeColor() {
 		startLabel1.style.fill = 0xa450a6;
 		startLabel2.style.fill = 0xa450a6;
 		startLabel3.style.fill = 0xa450a6;
+		startLabel4.style.fill = 0xa450a6;
 		colorButton.text = "Light Mode!";
 		colorButton.style.fill = 0xFFFFFF;
 		startLabel2.style.stroke = 0xfff9a6;
 		startLabel3.style.stroke = 0xfff9a6;
+		startLabel4.style.stroke = 0xfff9a6;
 		startButton.style.fill = 0xfff9a6;
 		gameLabel1.style.fill = 0xa450a6;
 		gameLabel2.style.fill = 0xa450a6;
