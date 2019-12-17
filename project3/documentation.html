@@ -31,11 +31,18 @@
                         <br>
                         We used PIXIjs in general and also PIXI.Graphics extended class to make our players and other objects. 
                         We made our own collision detection method by drawing lines for walls and taking the points
-                        of that wall and shrink them according to the size of the wall.
+                        of that wall and shrink them according to the size of the wall. Collisions essentially check if the 
+                        player is close to either end, and then if the player is not colliding with either end of the sphere it
+                        checks to see whether or not the player is colliding with the closest point to the line, by projecting the 
+                        player's position onto the line. 
                         <br>
-                        This requiered extreme mathematics which we implemented when we wrote the shrink method.
+                        <br>
+                        This required extreme mathematics which we implemented when we wrote the shrink method. In order to properly
+                        calculate collisions, the position of each essential point on the lines of the walls had to be changed in 
+                        accordance with the degree the wall was shrinking. 
                         Moreover, we added spawn speed of polygons according to level. Score is increased per frame and life is detucted when
                         player collides with wall. Player also gains life for every 1000 point he makes.
+                        <br>
                     </p>
                     <br>
                     <h3>Content Used</h3>
@@ -51,6 +58,9 @@
                                 <br>
                                 <br>
                                 <li><a href="https://www.youtube.com/user/Brackeys">Brackeys Youtube Channel</a></li>
+                                <br>
+                                <br>
+                                <li><a href="https://github.com/tonethar/IGME-235-Shared/blob/master/tutorial/_files/smooth-keyboard-control.zip">Smooth Movement</a></li>
                         </ul>
                     </p>                        
                 </div>
