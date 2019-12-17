@@ -5,17 +5,15 @@ const app = new PIXI.Application({
 	backgroundColor: 0xF5F5F5,
 });
 
-document.body.appendChild(app.view);
-
 // constants
 const sceneWidth = app.view.width;
 const sceneHeight = app.view.height;
+document.querySelector("#game-wrapper").appendChild(app.view);
 
 // adding cursor
-
-app.renderer.plugins.interaction.cursorStyles.default = "url('images/cursor.png'),auto";
+app.renderer.plugins.interaction.cursorStyles.default = "url('theGame/images/cursor.png'),auto";
 PIXI.loader.
-	add(["images/cursor.png"]).
+	add(["theGame/images/cursor.png"]).
 	on("progress", e => { console.log(`progress=${e.progress}`) }).
 	load(setup);
 
@@ -35,11 +33,13 @@ let score = 0;
 let container, particles, numberOfParticles = 100;
 let particleTexture
 let lifetime = 0;
-let life = 0;
+let life = 1;
 let level = 1;
 let timer = 0;
 let fpsLabel = document.querySelector('#fps');
 let enableLateralForce = false, enableVerticalForce = true;
+
+//Various labels for displaying game related information
 let startLabel1 = new PIXI.Text("Polygons");
 let startLabel2 = new PIXI.Text("Can you Survive..?");
 let startLabel3 = new PIXI.Text("Left/Right Arrow \nfor Anti/Clockwise Movement");
@@ -51,6 +51,7 @@ let gameOverLabel1 = new PIXI.Text("Final Score : " + score);
 let gameOverLabel2 = new PIXI.Text("Level : " + level);
 let colorButton = new PIXI.Text("Dark Mode!");
 let restartButton = new PIXI.Text("Play Again!");
+
 let darkMode = false;
 let finalScore = 0;
 let highScore = 0;
@@ -59,10 +60,8 @@ let paused = false;
 const hsKey = "sd5936-hs";
 const hsLevel = "sd5936-hsL";
 let startScreen = true;
-let highLevel=1;
-let backgroundSound,inGameSoundLightMode,inGameSoundDarkMode,gameOverSound;
-
-
+let highLevel = 1;
+let backgroundSound, inGameSoundLightMode, inGameSoundDarkMode, gameOverSound;
 
 //Setup an array with points to be used with walls
 let startPoints = [];
@@ -73,30 +72,13 @@ let walls = [];
 let wallTimer = 0;
 let wallTimer_Max = 10;
 
-// Captures the keyboard arrow keys
-document.addEventListener("keydown", (e) => {
-	if (e.code === "ArrowLeft") {
-		player.moveAnticlockwise(distance, centerVoid);
-	}
-	if (e.code === "ArrowRight") {
-		player.moveClockwise(distance, centerVoid);
-	}
-})
-
-// var vignetteFilter = new VignetteFilter({
-// 	size: 0.5,
-// 	amount: 0.5,
-// 	focalPointX: 0.5,
-// 	focalPointY: 0.5
-// });
-
 /** Assuming container is a Pixi Container */
 //Main setup for the game, all important objects are created here
 //and the main game functionality is setup here
 function setup() {
 	stage = app.stage;
-	stage.cursor = "url('images/cursor.png'),auto";
-	particleTexture = PIXI.Texture.fromImage('images/particle-6x6.png');
+	stage.cursor = "url('theGame/images/cursor.png'),auto";
+	particleTexture = PIXI.Texture.fromImage('theGame/images/particle-6x6.png');
 
 	// #1 - Create the `start` scene
 	startScene = new PIXI.Container();
@@ -128,24 +110,24 @@ function setup() {
 	gameScene.addChild(player);
 
 	// #6 - Load Sounds
-    backgroundSound = new Howl({
-		src: ['../sounds/MainMenu.mp3'],
-		loop:true
+	backgroundSound = new Howl({
+		src: ['theGame/sounds/MainMenu.mp3'],
+		loop: true
 	});
-	inGameSoundLightMode= new Howl({
-		src:['../sounds/inGame.mp3'],
-		loop:true
+	inGameSoundLightMode = new Howl({
+		src: ['theGame/sounds/inGame.mp3'],
+		loop: true
 	})
 
-	inGameSoundDarkMode= new Howl({
-		src:['../sounds/MainGame.mp3'],
-		loop:true
+	inGameSoundDarkMode = new Howl({
+		src: ['theGame/sounds/MainGame.mp3'],
+		loop: true
 	})
 
-	
-	gameOverSound= new Howl({
-		src:['../sounds/GameOver.mp3'],
-		loop:true
+
+	gameOverSound = new Howl({
+		src: ['theGame/sounds/GameOver.mp3'],
+		loop: true
 	})
 
 
@@ -193,12 +175,14 @@ function gameLoop() {
 	if (paused)
 		return;
 
+	//calculate delta time
 	let dt = 1 / app.ticker.FPS;
 	if (dt > 1 / 12) dt = 1 / 12;
-	if (life < 0) {
+	if (life <= 0) {
 		end();
 		paused = true;
 	}
+
 	//Update any particles
 	updateParticle(dt);
 	timer++;
@@ -207,7 +191,17 @@ function gameLoop() {
 		level += 1;
 	}
 
+	//Player movement
+	if (keys[65]){
+		player.moveAnticlockwise(distance, centerVoid);
+	}
+	else if (keys[68]){
+		player.moveClockwise(distance, centerVoid);
+	}
+
+	//begin wall logic
 	if (!startScreen) {
+		//add walls every so often
 		if (wallTimer == 0) {
 			if (darkMode) {
 				walls.push(CreateWall(0xa450a6));
@@ -218,19 +212,24 @@ function gameLoop() {
 
 		}
 
+		//Each frame allow walls to shrink down to the center
 		for (let i = 0; i < walls.length; i++) {
 			walls[i].Shrink();
-			if (walls[i].scale.x <= 0.15 && walls[i].scale.x > 0.05) {
+			//Check if the wall is colliding with the player
+			if (walls[i].scale.x <= 0.15 && walls[i].scale.x > 0.09) {
 				for (let j = 0; j < walls[i].points.length - 1; j++) {
 					if (CollisionTest(walls[i].points[j], walls[i].points[j + 1], player.center, player.radius)) {
-						console.log("hit");
+						life -= 1;
 						gameScene.removeChild(walls[i]);
+						walls.splice(i, 1);
+						return;
 					}
 				}
 			}
-			if (walls[i].scale.x <= 0.02) {
+			//If the wall is too small remove it entirely
+			if (walls[i].scale.x <= 0.09) {
 				gameScene.removeChild(walls[i]);
-				walls.shift();
+				walls.splice(i, 1);
 			}
 		}
 
@@ -420,7 +419,7 @@ function createLabelsAndButtons() {
 	restartButton.y = 350;
 	restartButton.interactive = true;
 	restartButton.buttonMode = true;
-	restartButton.on("pointerup", startGame); 
+	restartButton.on("pointerup", startGame);
 	restartButton.on('pointerover', e => e.target.alpha = 0.7);
 	restartButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
 	gameOverScene.addChild(restartButton);
@@ -432,36 +431,33 @@ function startGame() {
 	paused = false;
 	backgroundSound.stop();
 	gameOverSound.stop();
-	startScreen=false;
+	startScreen = false;
 	startScene.visible = false;
 	gameOverScene.visible = false;
 	gameScene.visible = true;
 	level = 1;
 	score = 0;
-	life = 500;
-	if(darkMode){
+	life = 5;
+	if (darkMode) {
 		inGameSoundDarkMode.play();
 	}
-	else{
+	else {
 		inGameSoundLightMode.play();
 	}
-	
-
-
 }
 
 //Change the color of the scene based on the chosen mode,
 //either light or dark
 function changeColor() {
 	if (darkMode) {
-		if(gameOverScene.visible){
+		if (gameOverScene.visible) {
 
 		}
-		else{
+		else {
 			inGameSoundDarkMode.stop();
 			inGameSoundLightMode.play();
 		}
-		
+
 		app.renderer.backgroundColor = 0xF5F5F5;
 		startLabel1.style.fill = 0x00000;
 		colorButton.text = "Dark Mode!";
@@ -484,12 +480,12 @@ function changeColor() {
 		gameOverLabel2.style.stroke = 0xC0C0C0;
 
 	}
-	else {
 
-		if(gameOverScene.visible){
+	else {
+		if (gameOverScene.visible) {
 
 		}
-		else{
+		else {
 			inGameSoundDarkMode.play();
 			inGameSoundLightMode.stop();
 		}
@@ -516,120 +512,4 @@ function changeColor() {
 	}
 
 	darkMode = !darkMode;
-}
-
-//calculate the distance between two points using
-//the distance formula
-function DistanceBetweenPoints(point1x, point1y, point2x, point2y) {
-	return Math.pow(Math.pow(point2x - point1x, 2) + Math.pow(point2y - point1y, 2), 0.5);
-}
-
-//Calculate all the starting points that a wall could stem from
-function CalcStartPoints(width, height) {
-	startPoints.push(new Point(width / 2, 0));
-	for (let i = 1; i < 5; i++) {
-		let angle = DegreeToRad(90) + (DegreeToRad(72) * i)
-		startPoints.push(new Point((width / 2) + (Math.cos(angle) * width / 2), Math.abs(Math.sin(angle) * height)));
-	}
-}
-
-//Create a wall to be added to the game scene
-function CreateWall(color) {
-	let wall = new Wall(color, sceneWidth / 2, sceneHeight / 2, startPoints);
-	gameScene.addChild(wall);
-	CreatePoints(wall, 0xfff9a6);
-	return wall;
-}
-
-//Add visuals for points to the game scene
-//for degbugging purposes
-function CreatePoints(wall, color) {
-	for (let i = 0; i < wall.points.length; i++) {
-		gameScene.addChild(wall.points[i]);
-		wall.points[i].distance = DistanceBetweenPoints(wall.points[i].center.x, wall.points[i].center.y, 300, 300);
-		let slope = (wall.points[i].y - 300) / (wall.points[i].x - 300);
-		wall.points[i].angle = Math.atan(slope);
-	}
-}
-
-//Convert degree measurements to radians for
-//cosine and sine functions
-function DegreeToRad(degrees) {
-	return (Math.PI / 180) * degrees;
-}
-
-//Function that changes the display to show the game over
-//scene once the player has run out of life
-function end() {
-	// paused=true;
-	startScreen=true;
-	backgroundSound.stop();
-	if (walls[0] != null) {
-		gameScene.removeChild(walls[0]);
-	}
-	// console.log(walls.length);
-	// console.log(walls[0].points.length);
-	if (highScore < score) {
-		localStorage.setItem(hsKey, score);
-	}
-	if (highLevel < level) {
-		localStorage.setItem(hsLevel, level);
-	}
-	gameOverLabel1.text = `Highscore: ${localStorage.getItem(hsKey)}`;
-	gameOverLabel2.text = `Highest Level: ${localStorage.getItem(hsLevel)}`;
-	gameOverScene.visible = true;
-	gameScene.visible = false;
-	if(darkMode){
-		inGameSoundDarkMode.stop();
-	}
-	else{
-		inGameSoundLightMode.stop();
-	}
-	gameOverSound.play();
-	
-	// score = 0;
-	// life = 2;
-	// timer = 0;
-	// wallTimer = 0;
-	// level = 1;
-}
-
-//function to test if the player is colliding with a particular wall
-function CollisionTest(p1, p2, center, r) {
-	//Check if it's next to the end points
-	if (DistanceBetweenPoints(p1.x, p1.y, center.x, center.y) < r
-		|| DistanceBetweenPoints(p2.x, p2.y, center.x, center.y) < r) {
-		return true;
-	}
-
-	//Get the closest point
-	let magnitude = DistanceBetweenPoints(p1.x, p1.y, p2.x, p2.y);
-	let dot = (((center.x - p1.x) * (p2.x - p1.x)) + ((center.y - p1.y) * (p2.y - p1.y))) / Math.pow(magnitude, 2);
-	let closest = new Point(p1.x + (dot * (p2.x - p1.x)), p1.y + (dot * (p2.y - p1.y)));
-
-	if (!PointOnLine(p1, p2, closest)) { //Check if the point is on the line
-		return false;
-	}
-
-	let distance = DistanceBetweenPoints(center.x, center.y, closest.x, closest.y);
-
-	//See if the distance between the point and the player is less than the radius
-	if (distance <= r) {
-		return true;
-	}
-	return false;
-}
-
-//function to test if a given point is actually
-//on a line
-function PointOnLine(p1, p2, point) {
-	let d1 = DistanceBetweenPoints(p1.x, p1.y, point.x, point.y);
-	let d2 = DistanceBetweenPoints(p2.x, p2.y, point.x, point.y);
-
-	let magnitude = DistanceBetweenPoints(p1.x, p1.y, p2.x, p2.y);
-
-	if (d1 + d2 >= magnitude - 0.1 && d1 + d2 <= magnitude + 0.1) {
-		return true;
-	}
-	return false;
 }
