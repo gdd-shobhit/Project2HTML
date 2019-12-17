@@ -53,14 +53,14 @@ let colorButton = new PIXI.Text("Dark Mode!");
 let restartButton = new PIXI.Text("Play Again!");
 let darkMode = false;
 let finalScore = 0;
-let highScore=0;
-let debugPoints=[];
-let paused=false;
-const hsKey= "sd5936-hs";
-const hsLevel="sd5936-hsL";
+let highScore = 0;
+let debugPoints = [];
+let paused = false;
+const hsKey = "sd5936-hs";
+const hsLevel = "sd5936-hsL";
 let startScreen = true;
-let highLevel=1;
-let backgroundSound,inGameSound;
+let highLevel = 1;
+let backgroundSound, inGameSound;
 
 
 
@@ -91,7 +91,8 @@ document.addEventListener("keydown", (e) => {
 // });
 
 /** Assuming container is a Pixi Container */
-
+//Main setup for the game, all important objects are created here
+//and the main game functionality is setup here
 function setup() {
 	stage = app.stage;
 	stage.cursor = "url('images/cursor.png'),auto";
@@ -127,13 +128,13 @@ function setup() {
 	gameScene.addChild(player);
 
 	// #6 - Load Sounds
-    backgroundSound = new Howl({
+	backgroundSound = new Howl({
 		src: ['../sounds/background.mp3'],
-		loop:true
+		loop: true
 	});
-	inGameSound= new Howl({
-		src:['../sounds/inGame.mp3'],
-		loop:true
+	inGameSound = new Howl({
+		src: ['../sounds/inGame.mp3'],
+		loop: true
 	})
 
 	backgroundSound.play();
@@ -145,11 +146,11 @@ function setup() {
 
 	// set highscore
 
-	if(localStorage.getItem(hsKey)!=null){
-		highScore=localStorage.getItem(hsKey);
+	if (localStorage.getItem(hsKey) != null) {
+		highScore = localStorage.getItem(hsKey);
 	}
-	if(localStorage.getItem(hsLevel)!=null){
-		highLevel=localStorage.getItem(hsLevel);
+	if (localStorage.getItem(hsLevel) != null) {
+		highLevel = localStorage.getItem(hsLevel);
 	}
 	// Create Particles
 	createParticles();
@@ -158,6 +159,8 @@ function setup() {
 	// Clicking the button calls startGame()
 }
 
+//function that creates some particles to float around
+//on the screen 
 function createParticles() {
 	particles = [];
 	container = new PIXI.particles.ParticleContainer();
@@ -176,18 +179,16 @@ function createParticles() {
 	}
 }
 
-
 //Main loop for the game, all functionality here
 function gameLoop() {
-	if(paused)
-	return;
-
+	if (paused)
+		return;
 
 	let dt = 1 / app.ticker.FPS;
 	if (dt > 1 / 12) dt = 1 / 12;
-	if(life<0){
+	if (life < 0) {
 		end();
-		paused=true;
+		paused = true;
 	}
 	//Update any particles
 	updateParticle(dt);
@@ -196,10 +197,8 @@ function gameLoop() {
 		timer = 0;
 		level += 1;
 	}
-	if(startScreen==true){
 
-	}
-	else{
+	if (!startScreen) {
 		if (wallTimer == 0) {
 			if (darkMode) {
 				walls.push(CreateWall(0xa450a6));
@@ -207,34 +206,30 @@ function gameLoop() {
 			else {
 				walls.push(CreateWall(0xC0C0C0));
 			}
-	
+
 		}
+
 		for (let i = 0; i < walls.length; i++) {
 			walls[i].Shrink();
-			if (walls[i].scale.x <= 0.1){
-					if (CollisionTest(walls[i], player.center, player.radius))
-						{
-							console.log("hit");
-							gameScene.removeChild(walls[i]);		
-							}
-					else{
-							// console.log("nope");
+			if (walls[i].scale.x <= 0.15 && walls[i].scale.x > 0.05) {
+				for (let j = 0; j < walls[i].points.length - 1; j++) {
+					if (CollisionTest(walls[i].points[j], walls[i].points[j + 1], player.center, player.radius)) {
+						console.log("hit");
+						gameScene.removeChild(walls[i]);
 					}
-						
-				}
-				if (walls[i].scale.x <= 0.02) {
-					gameScene.removeChild(walls[i]);	
-					walls.shift();
 				}
 			}
-	
-			
-		
-			// gains life every 1000pts
+			if (walls[i].scale.x <= 0.02) {
+				gameScene.removeChild(walls[i]);
+				walls.shift();
+			}
+		}
+
+		// gains life every 1000pts
 		if (score % 1000 == 0) {
 			life += 1;
 		}
-	
+
 		// walls increase every level
 		wallTimer_Max = 10 / level;
 		wallTimer += dt;
@@ -243,12 +238,10 @@ function gameLoop() {
 		}
 		score += 1;
 		changeFields();
-	
-		}
 	}
-	//wall functionality
-	
+}
 
+//Update the particles to change around their movement
 function updateParticle(dt) {
 	let sin = Math.sin(lifetime / 60);
 	let cos = Math.cos(lifetime / 60);
@@ -263,6 +256,8 @@ function updateParticle(dt) {
 	lifetime++;
 }
 
+//Update the fields at the top of the screen to 
+//reflect the current variables
 function changeFields() {
 	gameLabel1.text = "Score : " + score;
 	gameLabel2.text = "Life : " + life;
@@ -425,9 +420,9 @@ function createLabelsAndButtons() {
 
 //Make sure the game scene is visible and others are not
 function startGame() {
-	paused=false;
+	paused = false;
 	backgroundSound.stop();
-	startScreen=false;
+	startScreen = false;
 	startScene.visible = false;
 	gameOverScene.visible = false;
 	gameScene.visible = true;
@@ -435,9 +430,10 @@ function startGame() {
 	score = 0;
 	life = 500;
 	inGameSound.play();
-
-
 }
+
+//Change the color of the scene based on the chosen mode,
+//either light or dark
 function changeColor() {
 	if (darkMode) {
 		app.renderer.backgroundColor = 0xF5F5F5;
@@ -488,7 +484,8 @@ function changeColor() {
 	darkMode = !darkMode;
 }
 
-
+//calculate the distance between two points using
+//the distance formula
 function DistanceBetweenPoints(point1x, point1y, point2x, point2y) {
 	return Math.pow(Math.pow(point2x - point1x, 2) + Math.pow(point2y - point1y, 2), 0.5);
 }
@@ -506,63 +503,50 @@ function CalcStartPoints(width, height) {
 function CreateWall(color) {
 	let wall = new Wall(color, sceneWidth / 2, sceneHeight / 2, startPoints);
 	gameScene.addChild(wall);
-	CreatePoints(wall,0xfff9a6);
+	CreatePoints(wall, 0xfff9a6);
 	return wall;
 }
 
-
-function CreatePoints(wall,color){
-	for(let i=0;i<wall.points.length;i++){
+//Add visuals for points to the game scene
+//for degbugging purposes
+function CreatePoints(wall, color) {
+	for (let i = 0; i < wall.points.length; i++) {
 		gameScene.addChild(wall.points[i]);
-	
+		wall.points[i].distance = DistanceBetweenPoints(wall.points[i].center.x, wall.points[i].center.y, 300, 300);
+		let slope = (wall.points[i].y - 300) / (wall.points[i].x - 300);
+		wall.points[i].angle = Math.atan(slope);
 	}
-	Distance(wall);
 }
 
-function Distance(wall){
-	for(let i=0;i<wall.points.length;i++){
-		wall.points[i].distance= DistanceBetweenPoints(wall.points[i].center.x,wall.points[i].center.y,300,300);	
-		
-	}
-	UpdateAngleOnPoints(wall);
-}
-
-function UpdateAngleOnPoints(wall){
-
-	let slope;
-	for(let i=0;i<wall.points.length;i++){
-		let slope= (wall.points[i].y-300)/(wall.points[i].x-300);
-		wall.points[i].angle=Math.atan(slope);
-	}	
-}
-
-// deg to rad
+//Convert degree measurements to radians for
+//cosine and sine functions
 function DegreeToRad(degrees) {
 	return (Math.PI / 180) * degrees;
 }
 
-
+//Function that changes the display to show the game over
+//scene once the player has run out of life
 function end() {
 	// paused=true;
-	startScreen=true;
+	startScreen = true;
 	inGameSound.stop();
 	backgroundSound.stop();
-	if(walls[0]!=null){
+	if (walls[0] != null) {
 		gameScene.removeChild(walls[0]);
 	}
 	// console.log(walls.length);
 	// console.log(walls[0].points.length);
-	if(highScore<score){
-		localStorage.setItem(hsKey,score);
+	if (highScore < score) {
+		localStorage.setItem(hsKey, score);
 	}
-	if(highLevel<level){
-		localStorage.setItem(hsLevel,level);
+	if (highLevel < level) {
+		localStorage.setItem(hsLevel, level);
 	}
-	gameOverLabel1.text=`Highscore: ${localStorage.getItem(hsKey)}`;
-	gameOverLabel2.text=`Highest Level: ${localStorage.getItem(hsLevel)}`;
-    gameOverScene.visible=true;
+	gameOverLabel1.text = `Highscore: ${localStorage.getItem(hsKey)}`;
+	gameOverLabel2.text = `Highest Level: ${localStorage.getItem(hsLevel)}`;
+	gameOverScene.visible = true;
 	gameScene.visible = false;
-	
+
 	// score = 0;
 	// life = 2;
 	// timer = 0;
@@ -570,52 +554,42 @@ function end() {
 	// level = 1;
 }
 
-function CollisionTest(wall, center, r) {
-	// let v1 = new Point(center.x - p1.x, center.y - p1.y);
-	// let v2 = new Point(p2.x - p1.x, p2.y - p1.y);
-	let magnitude;
-	for(let i=0;wall.points.length;i++){
-		magnitude = DistanceBetweenPoints(wall.points[i].x,wall.points[i].y,center.x,center.y);
-		if(magnitude<18){
-			life--;
-			gameScene.removeChild(wall.points[i]);
-			gameScene.removeChild(wall);
-			return true;
-		}
-		else{
-			return false
-		}
+//function to test if the player is colliding with a particular wall
+function CollisionTest(p1, p2, center, r) {
+	//Check if it's next to the end points
+	if (DistanceBetweenPoints(p1.x, p1.y, center.x, center.y) < r
+		|| DistanceBetweenPoints(p2.x, p2.y, center.x, center.y) < r) {
+		return true;
 	}
-	// v2.x /= magnitude;
-	// v2.y /= magnitude;
+
+	//Get the closest point
+	let magnitude = DistanceBetweenPoints(p1.x, p1.y, p2.x, p2.y);
+	let dot = (((center.x - p1.x) * (p2.x - p1.x)) + ((center.y - p1.y) * (p2.y - p1.y))) / Math.pow(magnitude, 2);
+	let closest = new Point(p1.x + (dot * (p2.x - p1.x)), p1.y + (dot * (p2.y - p1.y)));
+
+	if (!PointOnLine(p1, p2, closest)) { //Check if the point is on the line
+		return false;
+	}
+
+	let distance = DistanceBetweenPoints(center.x, center.y, closest.x, closest.y);
 	
-	// let dot = (v1.x * v2.x) + (v1.y * v2.y);
+	//See if the distance between the point and the player is less than the radius
+	if (distance <= r) {
+		return true;
+	}
+	return false;
+}
 
-	// let closest;
-	// if (dot < 0) {
-	// 	closest = new Point(p1.x, p2.y);
-	// }
-	// else if (dot > 1) {
-	// 	closest = new Point(p2.x, p2.y);
-	// }
-	// else {
-	// 	closest = new Point(p1.x + (v2.x * dot), p1.y + (v2.y * dot));
-	// }
+//function to test if a given point is actually
+//on a line
+function PointOnLine(p1, p2, point) {
+	let d1 = DistanceBetweenPoints(p1.x, p1.y, point.x, point.y);
+	let d2 = DistanceBetweenPoints(p2.x, p2.y, point.x, point.y);
 
-	// let distance = Math.sqrt(Math.pow(closest.x - center.x, 2) + Math.pow(closest.y - center.y, 2));
-	// //console.log(distance);
-	// //console.log(closest);
-	// if (distance < 20){
-	// 	// console.log(closest);
-	// 	// //console.log(center);
-	// 	// console.log(distance);
-	// 	// //console.log(dot);
-	// }
+	let magnitude = DistanceBetweenPoints(p1.x, p1.y, p2.x, p2.y);
 
-	// if (distance <= r) {
-	// 	return true;
-	// }
-	// else {
-	// 	return false;
-	// }
+	if (d1 + d2 >= magnitude - 0.1 && d1 + d2 <= magnitude + 0.1) {
+		return true;
+	}
+	return false;
 }
