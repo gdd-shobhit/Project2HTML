@@ -14,7 +14,6 @@ class Player extends PIXI.Graphics {
         this.angle = 0;
         this.speed = 50;
         this.pivot.set(this.width / 2, this.height / 2);
-        // this.anchor={x:0.5,y:0.5};
         this.angle = 0;
     }
 
@@ -22,7 +21,6 @@ class Player extends PIXI.Graphics {
     //in a counterclockwise motion
     moveAnticlockwise(distance, centerVoid) {
         this.angle -= 0.15;
-        // this.angle += angle;
         this.x = centerVoid.center.x + Math.cos(this.angle) * distance;
         this.y = centerVoid.center.y + Math.sin(this.angle) * distance;
         this.moveCenter();
@@ -152,7 +150,6 @@ class Particle extends PIXI.Sprite {
         this.radius = radius;
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
-        // this.tint = 0xA9A9A9;
     }
 
     //Update method that applies a given force to the particle to move it about

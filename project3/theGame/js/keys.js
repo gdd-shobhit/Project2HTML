@@ -2,13 +2,11 @@
 const keys = [];
 
 window.onkeyup = (e) => {
-//	console.log("keyup=" + e.keyCode);
 	keys[e.keyCode] = false;
 	e.preventDefault();
 };
 
 window.onkeydown = (e)=>{
-//	console.log("keydown=" + e.keyCode);
 	keys[e.keyCode] = true;
 	
 	// checking for other keys - ex. 'p' and 'P' for pausing

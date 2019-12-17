@@ -47,8 +47,6 @@ function end() {
 	if (walls[0] != null) {
 		gameScene.removeChild(walls[0]);
 	}
-	// console.log(walls.length);
-	// console.log(walls[0].points.length);
 	if (highScore < score) {
 		localStorage.setItem(hsKey, score);
 	}
